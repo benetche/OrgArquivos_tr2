@@ -6,7 +6,7 @@ LDLIBS=-lm
 DLDFLAGS=-g
 LDFLAGS=
 
-VFLAGS=--leak-check=full --show-leak-kinds=all --track-origins=yes
+# VFLAGS=--leak-check=full --show-leak-kinds=all --track-origins=yes
 
 SRCS    := $(wildcard ./*.c)
 OBJS    := $(patsubst ./%.c,./%.o,$(SRCS))
@@ -31,8 +31,8 @@ hardClean:
 run: all
 	./$(TARGET)
 
-valgrind: debug
-	valgrind $(VFLAGS) ./$(TARGET)
+leaks: debug
+	leaks -atExit -- ./$(TARGET)
 
 zip:
 	zip -r $(TARGET).zip Makefile *.h *.c

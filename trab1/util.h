@@ -1,17 +1,47 @@
+// Autor: Eduardo Amaral - NUSP 11735021
+
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#define NULO "campo com valor nulo"
+
+#define false 0
+#define true 1
+
 #define READLINE_BUFFER 255
 
-#define USERS_BUFFER 127
-
+#include <stdint.h>
 #include <stdio.h>
-#include "user.h"
 
-typedef char bool;
+typedef char boolean;
+typedef char byte;
 
 char *readLine(FILE *stream);
 
-user **parseCSVToUsers(char *filename, int *nUsers);
+char *strtok_single(char *str, char const *delims, char **save_ptr);
+
+char *copyStr(char *src);
+
+int32_t safeToInt(char *val);
+
+char *safeToFixed(char *val, int size);
+
+char *safeToId(char *val, int size, boolean *removido);
+
+char *safeToDynamic(char *val, int32_t *size);
+
+void binarioNaTela(char *nomeArquivoBinario);
+
+char *prepStr(int size);
+
+boolean isStrNull(char *str);
+
+boolean isIntNull(int32_t i);
+
+void scan_quote_string(char *str);
+
+void setFileStatus(FILE *fp, byte status);
+
+boolean checkMatch(char *src, char *dest);
 
 #endif
