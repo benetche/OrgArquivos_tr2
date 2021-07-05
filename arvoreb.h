@@ -19,7 +19,7 @@
     typedef struct CHAVES_PONTEIROS{
         int chave;
         long long int pontRegistro; //byte offset do registro(char removido)
-    };
+    }CHAVES_PONTEIROS;
 
     //struct de no da arvore b
     typedef struct NO_ARVORE_B{
@@ -28,7 +28,7 @@
         int RRNdoNo;
         int ponteiros[ORDEM];
         CHAVES_PONTEIROS ponteirosRef[ORDEM-1];   
-    };
+    }NO_ARVORE_B;
 
 
 
