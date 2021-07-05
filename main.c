@@ -1,5 +1,15 @@
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "util.h"
+
+#include "vehicle.h"
+#include "vehicleUtils.h"
+
+#include "line.h"
+#include "lineUtils.h"
+
 
 int main(void){
     char reg_fileName[30];  //nome do arquivo .bin de registro
@@ -12,8 +22,8 @@ int main(void){
 
 
     switch(op){
-        case 9:
-            printf("DIGITE [arquivo de registro] + [arquivo de indices]\n");
+        case 10:
+            printf("DIGITE [arquivo de linha] + [arquivo de indices]\n");
             scanf("%s", reg_fileName);
             scanf("%s", ind_fileName);
             break;
