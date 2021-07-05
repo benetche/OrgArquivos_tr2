@@ -5,13 +5,14 @@
 
     #define PAG_REGISTRO 77
     #define ORDEM 5
+    #define LIXO "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     
     //registro de cabecalho
     typedef struct REG_CABECALHO{
         char status;
         int noRaiz;
         int RRNproxNo;
-        char lixo[68] = "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
+        const char lixo[68];
 
     }regCabecalho;
 

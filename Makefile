@@ -1,5 +1,5 @@
 all:
-	gcc *.c -o main
+	gcc *.c *.h -o main -Wall -Werror
 
 run:
 	./main
