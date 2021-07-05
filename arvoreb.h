@@ -6,7 +6,7 @@
     #define PAG_REGISTRO 77
     #define ORDEM 5
     #define LIXO "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-    
+
     //registro de cabecalho
     typedef struct REG_CABECALHO{
         char status;
@@ -31,6 +31,12 @@
         CHAVES_PONTEIROS ponteirosRef[ORDEM-1];   
     }NO_ARVORE_B;
 
-
+    //struct da arvore b
+    //possui o arquivo da arvore b, numero de nos e registro de cabecalho
+    typedef struct ARVORE_B{
+        FILE *arq_indices;
+        int nNos;
+        regCabecalho header;
+    }ARVORE_B;
 
 #endif

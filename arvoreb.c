@@ -20,5 +20,28 @@ NO_ARVORE_B *criarNo(){
     }
 
     return novo;
+}
+
+ARVORE_B *criarArvoreB(char *fileName, char *mode){
+    
+    ARVORE_B *arvore = NULL;
+    arvore = (ARVORE_B *) malloc(sizeof(ARVORE_B));
+    NO_ARVORE_B *aux = NULL;
+
+    arvore->arq_indices = fopen(fileName, mode);
+    if(!arvore->arq_indices){
+        free(arvore);
+        return NULL;
+    }
+
+    arvore->header.noRaiz = 0;
+    arvore->nNos = 1;
+    aux = criarNo();
+    aux->folha = 1;
+
+    //falta inserir o no na arvore
+
+
+    return arvore;
 
 }
