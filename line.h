@@ -12,14 +12,14 @@
  *
  */
 typedef struct lineFileHeader {
-    byte status;
-    int64_t byteProxReg;
-    int32_t nroRegistros;
-    int32_t nroRegRemovidos;
-    char *descreveCodigo;
-    char *descreveCartao;
-    char *descreveNome;
-    char *descreveCor;
+  byte status;
+  int64_t byteProxReg;
+  int32_t nroRegistros;
+  int32_t nroRegRemovidos;
+  char *descreveCodigo;
+  char *descreveCartao;
+  char *descreveNome;
+  char *descreveCor;
 } lineFileHeader;
 
 /**
@@ -27,14 +27,14 @@ typedef struct lineFileHeader {
  *
  */
 typedef struct lineRecord {
-    byte removido;
-    int32_t tamanhoRegistro;
-    int32_t codLinha;
-    char *aceitaCartao;
-    int32_t tamanhoNome;
-    char *nomeLinha;
-    int32_t tamanhoCor;
-    char *corLinha;
+  byte removido;
+  int32_t tamanhoRegistro;
+  int32_t codLinha;
+  char *aceitaCartao;
+  int32_t tamanhoNome;
+  char *nomeLinha;
+  int32_t tamanhoCor;
+  char *corLinha;
 } lineRecord;
 
 /**
@@ -43,12 +43,12 @@ typedef struct lineRecord {
  *
  */
 typedef struct lineFile {
-    FILE *fp;
-    boolean readRecords;
-    char *openMode;
-    int nRecords;
-    lineFileHeader *header;
-    lineRecord **records;
+  FILE *fp;
+  boolean readRecords;
+  char *openMode;
+  int nRecords;
+  lineFileHeader *header;
+  lineRecord **records;
 } lineFile;
 
 lineFile *createLineFileStruct(char *filename, char *mode);

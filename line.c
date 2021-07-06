@@ -18,40 +18,40 @@
  * @return lineFile* Retorna estrutura alocada na heap.
  */
 lineFile *createLineFileStruct(char *filename, char *mode) {
-    lineFile *lf = (lineFile *)malloc(sizeof(lineFile));
-    lf->nRecords = 0;
-    lf->openMode = mode;
-    lf->readRecords = false;
+  lineFile *lf = (lineFile *)malloc(sizeof(lineFile));
+  lf->nRecords = 0;
+  lf->openMode = mode;
+  lf->readRecords = false;
 
-    lf->fp = fopen(filename, mode);
+  lf->fp = fopen(filename, mode);
 
-    if (!lf->fp) {
-        free(lf);
-        return NULL;
+  if (!lf->fp) {
+    free(lf);
+    return NULL;
+  }
+
+  // Verifica se arquivo já existe e se não está corrompido
+  if (strcmp(mode, "wb") != 0) {
+    byte status;
+    if (fread(&status, sizeof(byte), 1, lf->fp) != 1 || status != '1') {
+      fclose(lf->fp);
+      free(lf);
+      return NULL;
     }
+  }
 
-    // Verifica se arquivo já existe e se não está corrompido
-    if (strcmp(mode, "wb") != 0) {
-        byte status;
-        if (fread(&status, sizeof(byte), 1, lf->fp) != 1 || status != '1') {
-            fclose(lf->fp);
-            free(lf);
-            return NULL;
-        }
-    }
+  lf->header = (lineFileHeader *)malloc(sizeof(lineFileHeader));
+  lf->header->byteProxReg = 0;
+  lf->header->nroRegRemovidos = lf->header->nroRegistros = 0;
 
-    lf->header = (lineFileHeader *)malloc(sizeof(lineFileHeader));
-    lf->header->byteProxReg = 0;
-    lf->header->nroRegRemovidos = lf->header->nroRegistros = 0;
+  if (strcmp(mode, "rb") != 0) {
+    setFileStatus(lf->fp, '0');
+    lf->header->status = '0';
+  }
 
-    if (strcmp(mode, "rb") != 0) {
-        setFileStatus(lf->fp, '0');
-        lf->header->status = '0';
-    }
+  lf->records = NULL;
 
-    lf->records = NULL;
-
-    return lf;
+  return lf;
 }
 
 /**
@@ -70,19 +70,19 @@ lineRecord *newLineRecord(boolean removido, int32_t codLinha,
                           char *aceitaCartao, int32_t tamanhoNome,
                           char *nomeLinha, int32_t tamanhoCor, char *corLinha) {
 
-    lineRecord *l = (lineRecord *)malloc(sizeof(lineRecord));
+  lineRecord *l = (lineRecord *)malloc(sizeof(lineRecord));
 
-    l->removido = removido ? '1' : '0';
-    l->codLinha = codLinha;
-    l->aceitaCartao = aceitaCartao;
-    l->tamanhoNome = tamanhoNome;
-    l->nomeLinha = nomeLinha;
-    l->tamanhoCor = tamanhoCor;
-    l->corLinha = corLinha;
+  l->removido = removido ? '1' : '0';
+  l->codLinha = codLinha;
+  l->aceitaCartao = aceitaCartao;
+  l->tamanhoNome = tamanhoNome;
+  l->nomeLinha = nomeLinha;
+  l->tamanhoCor = tamanhoCor;
+  l->corLinha = corLinha;
 
-    l->tamanhoRegistro = 4 + 1 + 4 + tamanhoNome + 4 + tamanhoCor;
+  l->tamanhoRegistro = 4 + 1 + 4 + tamanhoNome + 4 + tamanhoCor;
 
-    return l;
+  return l;
 }
 
 /**
@@ -97,11 +97,11 @@ lineRecord *newLineRecord(boolean removido, int32_t codLinha,
 
 void setLineHeader(lineFile *lf, char *descreveCodigo, char *descreveCartao,
                    char *descreveNome, char *descreveCor) {
-    lf->header->descreveCodigo = descreveCodigo;
-    lf->header->descreveCartao = descreveCartao;
-    lf->header->descreveNome = descreveNome;
-    lf->header->descreveCor = descreveCor;
-    lf->header->byteProxReg += 1 + 8 + 4 + 4 + 15 + 13 + 13 + 24;
+  lf->header->descreveCodigo = descreveCodigo;
+  lf->header->descreveCartao = descreveCartao;
+  lf->header->descreveNome = descreveNome;
+  lf->header->descreveCor = descreveCor;
+  lf->header->byteProxReg += 1 + 8 + 4 + 4 + 15 + 13 + 13 + 24;
 }
 /**
  * @brief Desaloca por completo estrutura de registro de linha
@@ -109,10 +109,10 @@ void setLineHeader(lineFile *lf, char *descreveCodigo, char *descreveCartao,
  * @param l Registro a ser deasalocado
  */
 void destroyLineRecord(lineRecord *l) {
-    free(l->aceitaCartao);
-    free(l->nomeLinha);
-    free(l->corLinha);
-    free(l);
+  free(l->aceitaCartao);
+  free(l->nomeLinha);
+  free(l->corLinha);
+  free(l);
 }
 
 /**
@@ -121,11 +121,11 @@ void destroyLineRecord(lineRecord *l) {
  * @param lh Header a ser desalocado
  */
 void destroyLineHeader(lineFileHeader *lh) {
-    free(lh->descreveCodigo);
-    free(lh->descreveCartao);
-    free(lh->descreveNome);
-    free(lh->descreveCor);
-    free(lh);
+  free(lh->descreveCodigo);
+  free(lh->descreveCartao);
+  free(lh->descreveNome);
+  free(lh->descreveCor);
+  free(lh);
 }
 
 /**
@@ -135,23 +135,23 @@ void destroyLineHeader(lineFileHeader *lh) {
  */
 void destroyLineFile(lineFile *lf) {
 
-    if (lf->readRecords) {
-        for (int i = 0; i < lf->nRecords; i++) {
-            destroyLineRecord(lf->records[i]);
-        }
-
-        free(lf->records);
+  if (lf->readRecords) {
+    for (int i = 0; i < lf->nRecords; i++) {
+      destroyLineRecord(lf->records[i]);
     }
 
-    if (strcmp(lf->openMode, "rb") != 0) {
-        setFileStatus(lf->fp, '1');
-        lf->header->status = '1';
-    }
+    free(lf->records);
+  }
 
-    destroyLineHeader(lf->header);
+  if (strcmp(lf->openMode, "rb") != 0) {
+    setFileStatus(lf->fp, '1');
+    lf->header->status = '1';
+  }
 
-    fclose(lf->fp);
-    free(lf);
+  destroyLineHeader(lf->header);
+
+  fclose(lf->fp);
+  free(lf);
 }
 /**
  * @brief Escreve o header da memória principal no arquivo descrito por lf
@@ -159,14 +159,14 @@ void destroyLineFile(lineFile *lf) {
  * @param lf
  */
 void writeLineFileHeader(lineFile *lf) {
-    fseek(lf->fp, 1, SEEK_SET);
-    fwrite(&lf->header->byteProxReg, sizeof(int64_t), 1, lf->fp);
-    fwrite(&lf->header->nroRegistros, sizeof(int32_t), 1, lf->fp);
-    fwrite(&lf->header->nroRegRemovidos, sizeof(int32_t), 1, lf->fp);
-    fwrite(lf->header->descreveCodigo, sizeof(char), 15, lf->fp);
-    fwrite(lf->header->descreveCartao, sizeof(char), 13, lf->fp);
-    fwrite(lf->header->descreveNome, sizeof(char), 13, lf->fp);
-    fwrite(lf->header->descreveCor, sizeof(char), 24, lf->fp);
+  fseek(lf->fp, 1, SEEK_SET);
+  fwrite(&lf->header->byteProxReg, sizeof(int64_t), 1, lf->fp);
+  fwrite(&lf->header->nroRegistros, sizeof(int32_t), 1, lf->fp);
+  fwrite(&lf->header->nroRegRemovidos, sizeof(int32_t), 1, lf->fp);
+  fwrite(lf->header->descreveCodigo, sizeof(char), 15, lf->fp);
+  fwrite(lf->header->descreveCartao, sizeof(char), 13, lf->fp);
+  fwrite(lf->header->descreveNome, sizeof(char), 13, lf->fp);
+  fwrite(lf->header->descreveCor, sizeof(char), 24, lf->fp);
 }
 /**
  * @brief Escreve o registro de linha lr no arquivo fp
@@ -175,14 +175,14 @@ void writeLineFileHeader(lineFile *lf) {
  * @param lr
  */
 void writeLineReg(FILE *fp, lineRecord *lr) {
-    fwrite(&lr->removido, sizeof(byte), 1, fp);
-    fwrite(&lr->tamanhoRegistro, sizeof(int32_t), 1, fp);
-    fwrite(&lr->codLinha, sizeof(int32_t), 1, fp);
-    fwrite(lr->aceitaCartao, sizeof(char), 1, fp);
-    fwrite(&lr->tamanhoNome, sizeof(int32_t), 1, fp);
-    fwrite(lr->nomeLinha, sizeof(char), lr->tamanhoNome, fp);
-    fwrite(&lr->tamanhoCor, sizeof(int32_t), 1, fp);
-    fwrite(lr->corLinha, sizeof(char), lr->tamanhoCor, fp);
+  fwrite(&lr->removido, sizeof(byte), 1, fp);
+  fwrite(&lr->tamanhoRegistro, sizeof(int32_t), 1, fp);
+  fwrite(&lr->codLinha, sizeof(int32_t), 1, fp);
+  fwrite(lr->aceitaCartao, sizeof(char), 1, fp);
+  fwrite(&lr->tamanhoNome, sizeof(int32_t), 1, fp);
+  fwrite(lr->nomeLinha, sizeof(char), lr->tamanhoNome, fp);
+  fwrite(&lr->tamanhoCor, sizeof(int32_t), 1, fp);
+  fwrite(lr->corLinha, sizeof(char), lr->tamanhoCor, fp);
 }
 
 /**
@@ -191,11 +191,11 @@ void writeLineReg(FILE *fp, lineRecord *lr) {
  * @param lf
  */
 void writeLineFile(lineFile *lf) {
-    writeLineFileHeader(lf);
+  writeLineFileHeader(lf);
 
-    for (int i = 0; i < lf->nRecords; i++) {
-        writeLineReg(lf->fp, lf->records[i]);
-    }
+  for (int i = 0; i < lf->nRecords; i++) {
+    writeLineReg(lf->fp, lf->records[i]);
+  }
 }
 
 /**
@@ -204,21 +204,21 @@ void writeLineFile(lineFile *lf) {
  * @param lf
  */
 void readLineFileHeader(lineFile *lf) {
-    fseek(lf->fp, 0, SEEK_SET);
-    fread(&lf->header->status, sizeof(byte), 1, lf->fp);
-    fread(&lf->header->byteProxReg, sizeof(int64_t), 1, lf->fp);
-    fread(&lf->header->nroRegistros, sizeof(int32_t), 1, lf->fp);
-    fread(&lf->header->nroRegRemovidos, sizeof(int32_t), 1, lf->fp);
+  fseek(lf->fp, 0, SEEK_SET);
+  fread(&lf->header->status, sizeof(byte), 1, lf->fp);
+  fread(&lf->header->byteProxReg, sizeof(int64_t), 1, lf->fp);
+  fread(&lf->header->nroRegistros, sizeof(int32_t), 1, lf->fp);
+  fread(&lf->header->nroRegRemovidos, sizeof(int32_t), 1, lf->fp);
 
-    lf->header->descreveCodigo = prepStr(15);
-    lf->header->descreveCartao = prepStr(13);
-    lf->header->descreveNome = prepStr(13);
-    lf->header->descreveCor = prepStr(24);
+  lf->header->descreveCodigo = prepStr(15);
+  lf->header->descreveCartao = prepStr(13);
+  lf->header->descreveNome = prepStr(13);
+  lf->header->descreveCor = prepStr(24);
 
-    fread(lf->header->descreveCodigo, sizeof(char), 15, lf->fp);
-    fread(lf->header->descreveCartao, sizeof(char), 13, lf->fp);
-    fread(lf->header->descreveNome, sizeof(char), 13, lf->fp);
-    fread(lf->header->descreveCor, sizeof(char), 24, lf->fp);
+  fread(lf->header->descreveCodigo, sizeof(char), 15, lf->fp);
+  fread(lf->header->descreveCartao, sizeof(char), 13, lf->fp);
+  fread(lf->header->descreveNome, sizeof(char), 13, lf->fp);
+  fread(lf->header->descreveCor, sizeof(char), 24, lf->fp);
 }
 
 /**
@@ -228,17 +228,17 @@ void readLineFileHeader(lineFile *lf) {
  * @param lr
  */
 void readLineReg(FILE *fp, lineRecord *lr) {
-    fread(&lr->removido, sizeof(byte), 1, fp);
-    fread(&lr->tamanhoRegistro, sizeof(int32_t), 1, fp);
-    fread(&lr->codLinha, sizeof(int32_t), 1, fp);
-    lr->aceitaCartao = prepStr(1);
-    fread(lr->aceitaCartao, sizeof(char), 1, fp);
-    fread(&lr->tamanhoNome, sizeof(int32_t), 1, fp);
-    lr->nomeLinha = prepStr(lr->tamanhoNome);
-    fread(lr->nomeLinha, sizeof(char), lr->tamanhoNome, fp);
-    fread(&lr->tamanhoCor, sizeof(int32_t), 1, fp);
-    lr->corLinha = prepStr(lr->tamanhoCor);
-    fread(lr->corLinha, sizeof(char), lr->tamanhoCor, fp);
+  fread(&lr->removido, sizeof(byte), 1, fp);
+  fread(&lr->tamanhoRegistro, sizeof(int32_t), 1, fp);
+  fread(&lr->codLinha, sizeof(int32_t), 1, fp);
+  lr->aceitaCartao = prepStr(1);
+  fread(lr->aceitaCartao, sizeof(char), 1, fp);
+  fread(&lr->tamanhoNome, sizeof(int32_t), 1, fp);
+  lr->nomeLinha = prepStr(lr->tamanhoNome);
+  fread(lr->nomeLinha, sizeof(char), lr->tamanhoNome, fp);
+  fread(&lr->tamanhoCor, sizeof(int32_t), 1, fp);
+  lr->corLinha = prepStr(lr->tamanhoCor);
+  fread(lr->corLinha, sizeof(char), lr->tamanhoCor, fp);
 }
 
 /**
@@ -249,20 +249,19 @@ void readLineReg(FILE *fp, lineRecord *lr) {
  * memória principal
  */
 void readLineFile(lineFile *lf, boolean readRecords) {
-    readLineFileHeader(lf);
+  readLineFileHeader(lf);
 
-    lf->nRecords = lf->header->nroRegRemovidos + lf->header->nroRegistros;
+  lf->nRecords = lf->header->nroRegRemovidos + lf->header->nroRegistros;
 
-    if (readRecords) {
-        lf->readRecords = true;
-        lf->records =
-            (lineRecord **)malloc(sizeof(lineRecord *) * lf->nRecords);
+  if (readRecords) {
+    lf->readRecords = true;
+    lf->records = (lineRecord **)malloc(sizeof(lineRecord *) * lf->nRecords);
 
-        for (int i = 0; i < lf->nRecords; i++) {
-            lf->records[i] = (lineRecord *)malloc(sizeof(lineRecord));
-            readLineReg(lf->fp, lf->records[i]);
-        }
+    for (int i = 0; i < lf->nRecords; i++) {
+      lf->records[i] = (lineRecord *)malloc(sizeof(lineRecord));
+      readLineReg(lf->fp, lf->records[i]);
     }
+  }
 }
 
 /**
@@ -273,37 +272,37 @@ void readLineFile(lineFile *lf, boolean readRecords) {
  * @param lr Registro à ser impresso
  */
 void printLineRecord(lineFileHeader *lh, lineRecord *lr) {
-    if (lr->removido == '1') {
+  if (lr->removido == '1') {
 
-        printf("%s: ", lh->descreveCodigo);
-        printf("%d", lr->codLinha);
-        printf("\n");
+    printf("%s: ", lh->descreveCodigo);
+    printf("%d", lr->codLinha);
+    printf("\n");
 
-        printf("%s: ", lh->descreveNome);
-        if (isStrNull(lr->nomeLinha)) {
-            printf(NULO);
-        } else {
-            printf("%s", lr->nomeLinha);
-        }
-        printf("\n");
-
-        printf("%s: ", lh->descreveCor);
-        if (isStrNull(lr->corLinha)) {
-            printf(NULO);
-        } else {
-            printf("%s", lr->corLinha);
-        }
-        printf("\n");
-
-        printf("%s: ", lh->descreveCartao);
-        if (isStrNull(lr->aceitaCartao)) {
-            printf(NULO);
-        } else {
-            printCard(lr->aceitaCartao);
-        }
-        printf("\n");
-        printf("\n");
+    printf("%s: ", lh->descreveNome);
+    if (isStrNull(lr->nomeLinha)) {
+      printf(NULO);
+    } else {
+      printf("%s", lr->nomeLinha);
     }
+    printf("\n");
+
+    printf("%s: ", lh->descreveCor);
+    if (isStrNull(lr->corLinha)) {
+      printf(NULO);
+    } else {
+      printf("%s", lr->corLinha);
+    }
+    printf("\n");
+
+    printf("%s: ", lh->descreveCartao);
+    if (isStrNull(lr->aceitaCartao)) {
+      printf(NULO);
+    } else {
+      printCard(lr->aceitaCartao);
+    }
+    printf("\n");
+    printf("\n");
+  }
 }
 
 /**
@@ -312,9 +311,9 @@ void printLineRecord(lineFileHeader *lh, lineRecord *lr) {
  * @param lf
  */
 void printLineFile(lineFile *lf) {
-    for (int i = 0; i < lf->nRecords; i++) {
-        printLineRecord(lf->header, lf->records[i]);
-    }
+  for (int i = 0; i < lf->nRecords; i++) {
+    printLineRecord(lf->header, lf->records[i]);
+  }
 }
 
 /**
@@ -327,66 +326,66 @@ void printLineFile(lineFile *lf) {
  * @return boolean Retorna true caso o registro atendeu as condições de busca
  */
 boolean printIfMatchesLine(lineFile *lf, char *field, char *val) {
-    byte removido;
-    int32_t regSize;
+  byte removido;
+  int32_t regSize;
 
-    fread(&removido, sizeof(byte), 1, lf->fp);
-    fread(&regSize, sizeof(int32_t), 1, lf->fp);
+  fread(&removido, sizeof(byte), 1, lf->fp);
+  fread(&regSize, sizeof(int32_t), 1, lf->fp);
 
-    if (removido == '1') {
+  if (removido == '1') {
 
-        if (*val == 0) {
-            val = NULL;
-        }
-
-        boolean matches = false;
-        int read = 0;
-
-        switch (field[2]) {
-            // codLinha
-        case 'd':
-            matches = checkCode(atoi(val), lf->fp, &read);
-            break;
-            // aceitaCartao
-        case 'e':
-            matches = checkCard(val, lf->fp, &read);
-            break;
-            // nomeLinha
-        case 'm':
-            matches = checkName(val, lf->fp, &read);
-            break;
-            // corLinha
-        case 'r':
-            matches = checkColor(val, lf->fp, &read);
-            break;
-        default:
-            break;
-        }
-
-        if (matches) {
-            // Retorna à posição inicial do registro
-            fseek(lf->fp, -(read + 5), SEEK_CUR);
-
-            lineRecord *tmp = (lineRecord *)malloc(sizeof(lineRecord));
-
-            readLineReg(lf->fp, tmp);
-
-            printLineRecord(lf->header, tmp);
-
-            destroyLineRecord(tmp);
-
-            return true;
-        }
-        // Pula restante do registro
-        fseek(lf->fp, regSize - read, SEEK_CUR);
-
-        return false;
+    if (*val == 0) {
+      val = NULL;
     }
 
-    // Pula registro por completo
-    fseek(lf->fp, regSize, SEEK_CUR);
+    boolean matches = false;
+    int read = 0;
+
+    switch (field[2]) {
+      // codLinha
+    case 'd':
+      matches = checkCode(atoi(val), lf->fp, &read);
+      break;
+      // aceitaCartao
+    case 'e':
+      matches = checkCard(val, lf->fp, &read);
+      break;
+      // nomeLinha
+    case 'm':
+      matches = checkName(val, lf->fp, &read);
+      break;
+      // corLinha
+    case 'r':
+      matches = checkColor(val, lf->fp, &read);
+      break;
+    default:
+      break;
+    }
+
+    if (matches) {
+      // Retorna à posição inicial do registro
+      fseek(lf->fp, -(read + 5), SEEK_CUR);
+
+      lineRecord *tmp = (lineRecord *)malloc(sizeof(lineRecord));
+
+      readLineReg(lf->fp, tmp);
+
+      printLineRecord(lf->header, tmp);
+
+      destroyLineRecord(tmp);
+
+      return true;
+    }
+    // Pula restante do registro
+    fseek(lf->fp, regSize - read, SEEK_CUR);
 
     return false;
+  }
+
+  // Pula registro por completo
+  fseek(lf->fp, regSize, SEEK_CUR);
+
+  return false;
 }
 /**
  * @brief Imprime todos regitros de lf que possuem valor do campo field igual a
@@ -399,13 +398,13 @@ boolean printIfMatchesLine(lineFile *lf, char *field, char *val) {
  * de busca
  */
 boolean printMatchingRecordsLine(lineFile *lf, char *field, char *val) {
-    boolean matched = false;
+  boolean matched = false;
 
-    for (int i = 0; i < lf->nRecords; i++) {
-        matched |= printIfMatchesLine(lf, field, val);
-    }
+  for (int i = 0; i < lf->nRecords; i++) {
+    matched |= printIfMatchesLine(lf, field, val);
+  }
 
-    return matched;
+  return matched;
 }
 
 /**
@@ -415,59 +414,59 @@ boolean printMatchingRecordsLine(lineFile *lf, char *field, char *val) {
  * @param lf
  */
 void insertLines(int n, lineFile *lf) {
-    fseek(lf->fp, lf->header->byteProxReg, SEEK_SET);
+  fseek(lf->fp, lf->header->byteProxReg, SEEK_SET);
 
-    lineRecord *lr = (lineRecord *)malloc(sizeof(lineRecord));
+  lineRecord *lr = (lineRecord *)malloc(sizeof(lineRecord));
 
-    char codLinha[5];
-    char aceitaCartao[2];
-    char nomeLinha[128];
-    char corLinha[128];
+  char codLinha[5];
+  char aceitaCartao[2];
+  char nomeLinha[128];
+  char corLinha[128];
 
-    for (int i = 0; i < n; i++) {
-        lf->nRecords++;
+  for (int i = 0; i < n; i++) {
+    lf->nRecords++;
 
-        scan_quote_string(codLinha);
+    scan_quote_string(codLinha);
 
-        if (codLinha[0] == '*') {
-            lr->removido = '0';
-            lf->header->nroRegRemovidos++;
-            lr->codLinha = atoi(codLinha + 1);
-        } else {
-            lr->removido = '1';
-            lf->header->nroRegistros++;
-            lr->codLinha = atoi(codLinha);
-        }
-
-        scan_quote_string(aceitaCartao);
-        lr->aceitaCartao = aceitaCartao;
-
-        scan_quote_string(nomeLinha);
-        if (*nomeLinha == 0) {
-            lr->tamanhoNome = 0;
-            lr->nomeLinha = NULL;
-        } else {
-            lr->tamanhoNome = strlen(nomeLinha);
-            lr->nomeLinha = nomeLinha;
-        }
-
-        scan_quote_string(corLinha);
-        if (*corLinha == 0) {
-            lr->tamanhoCor = 0;
-            lr->corLinha = NULL;
-        } else {
-            lr->tamanhoCor = strlen(corLinha);
-            lr->corLinha = corLinha;
-        }
-
-        lr->tamanhoRegistro = 4 + 1 + 4 + lr->tamanhoNome + 4 + lr->tamanhoCor;
-
-        lf->header->byteProxReg += lr->tamanhoRegistro + 5;
-
-        writeLineReg(lf->fp, lr);
+    if (codLinha[0] == '*') {
+      lr->removido = '0';
+      lf->header->nroRegRemovidos++;
+      lr->codLinha = atoi(codLinha + 1);
+    } else {
+      lr->removido = '1';
+      lf->header->nroRegistros++;
+      lr->codLinha = atoi(codLinha);
     }
 
-    writeLineFileHeader(lf);
+    scan_quote_string(aceitaCartao);
+    lr->aceitaCartao = aceitaCartao;
 
-    free(lr);
+    scan_quote_string(nomeLinha);
+    if (*nomeLinha == 0) {
+      lr->tamanhoNome = 0;
+      lr->nomeLinha = NULL;
+    } else {
+      lr->tamanhoNome = strlen(nomeLinha);
+      lr->nomeLinha = nomeLinha;
+    }
+
+    scan_quote_string(corLinha);
+    if (*corLinha == 0) {
+      lr->tamanhoCor = 0;
+      lr->corLinha = NULL;
+    } else {
+      lr->tamanhoCor = strlen(corLinha);
+      lr->corLinha = corLinha;
+    }
+
+    lr->tamanhoRegistro = 4 + 1 + 4 + lr->tamanhoNome + 4 + lr->tamanhoCor;
+
+    lf->header->byteProxReg += lr->tamanhoRegistro + 5;
+
+    writeLineReg(lf->fp, lr);
+  }
+
+  writeLineFileHeader(lf);
+
+  free(lr);
 }

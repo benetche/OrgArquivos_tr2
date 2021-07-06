@@ -10,45 +10,43 @@
 #include "line.h"
 #include "lineUtils.h"
 
+int main(void) {
+  char *regFileName = (char *)malloc(sizeof(char) * 128);
+  char *indFileName = (char *)malloc(sizeof(char) * 128);
 
-int main(void){
-    char *regFileName = (char *) malloc(sizeof(char) * 128);
-    char *indFileName = (char *) malloc(sizeof(char) * 128);
+  unsigned int op;
 
-    unsigned int op;
+  printf("Digite uma operacao:\n");
 
-    printf("Digite uma operacao:\n");
+  scanf("%ud", &op);
+  lineFile *lf;
 
-    scanf("%ud", &op);
-    lineFile *lf;
+  switch (op) {
+  case 10:
+    printf("DIGITE [arquivo de linha] + [arquivo de indices]\n");
+    scanf("%[^\n]s", regFileName);
+    scanf("%[^\n]s", indFileName);
 
-    switch(op){
-        case 10:
-            printf("DIGITE [arquivo de linha] + [arquivo de indices]\n");
-            scanf("%[^\n]s", regFileName);
-            scanf("%[^\n]s", indFileName);
+    lf = createLineFileStruct(regFileName, "rb");
 
-            lf = createLineFileStruct(regFileName, "rb");
-
-            if (!lf) {
-                printf("Falha no processamento do arquivo.\n");
-                break;
-            }
-
-            readLineFile(lf, true);
-
-            if(lf->nRecords == 0){
-                printf("Registro inexistente.\n");
-            }
-
-            
-            destroyLineFile(lf);
-            break;
-
-        default:
-
-            break;
+    if (!lf) {
+      printf("Falha no processamento do arquivo.\n");
+      break;
     }
 
-    return 0;
+    readLineFile(lf, true);
+
+    if (lf->nRecords == 0) {
+      printf("Registro inexistente.\n");
+    }
+
+    destroyLineFile(lf);
+    break;
+
+  default:
+
+    break;
+  }
+
+  return 0;
 }

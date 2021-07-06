@@ -15,48 +15,48 @@
  * @param month
  */
 void printMonth(int month) {
-    printf(" de ");
-    switch (month) {
-    case 1:
-        printf("janeiro");
-        break;
-    case 2:
-        printf("fevereiro");
-        break;
-    case 3:
-        printf("março");
-        break;
-    case 4:
-        printf("abril");
-        break;
-    case 5:
-        printf("maio");
-        break;
-    case 6:
-        printf("junho");
-        break;
-    case 7:
-        printf("julho");
-        break;
-    case 8:
-        printf("agosto");
-        break;
-    case 9:
-        printf("setembro");
-        break;
-    case 10:
-        printf("outubro");
-        break;
-    case 11:
-        printf("novembro");
-        break;
-    case 12:
-        printf("dezembro");
-        break;
-    default:
-        break;
-    }
-    printf(" de ");
+  printf(" de ");
+  switch (month) {
+  case 1:
+    printf("janeiro");
+    break;
+  case 2:
+    printf("fevereiro");
+    break;
+  case 3:
+    printf("março");
+    break;
+  case 4:
+    printf("abril");
+    break;
+  case 5:
+    printf("maio");
+    break;
+  case 6:
+    printf("junho");
+    break;
+  case 7:
+    printf("julho");
+    break;
+  case 8:
+    printf("agosto");
+    break;
+  case 9:
+    printf("setembro");
+    break;
+  case 10:
+    printf("outubro");
+    break;
+  case 11:
+    printf("novembro");
+    break;
+  case 12:
+    printf("dezembro");
+    break;
+  default:
+    break;
+  }
+  printf(" de ");
 }
 
 /**
@@ -66,15 +66,15 @@ void printMonth(int month) {
  * @param data
  */
 void printDate(char *data) {
-    char month[3];
+  char month[3];
 
-    month[0] = data[5];
-    month[1] = data[6];
-    month[2] = 0;
+  month[0] = data[5];
+  month[1] = data[6];
+  month[2] = 0;
 
-    printf("%.2s", data + 8);
-    printMonth(atoi(month));
-    printf("%.4s", data);
+  printf("%.2s", data + 8);
+  printMonth(atoi(month));
+  printf("%.4s", data);
 }
 
 /**
@@ -84,17 +84,17 @@ void printDate(char *data) {
  * @param line Linha de cabeçalho
  */
 void parseDescVehicle(vehicleFile *vf, char *line) {
-    char *rest = line;
+  char *rest = line;
 
-    char *descrevePrefixo = copyStr(strtok_single(rest, ",", &rest));
-    char *descreveData = copyStr(strtok_single(rest, ",", &rest));
-    char *descreveLugares = copyStr(strtok_single(rest, ",", &rest));
-    char *descreveLinha = copyStr(strtok_single(rest, ",", &rest));
-    char *descreveModelo = copyStr(strtok_single(rest, ",", &rest));
-    char *descreveCategoria = copyStr(strtok_single(rest, ",", &rest));
+  char *descrevePrefixo = copyStr(strtok_single(rest, ",", &rest));
+  char *descreveData = copyStr(strtok_single(rest, ",", &rest));
+  char *descreveLugares = copyStr(strtok_single(rest, ",", &rest));
+  char *descreveLinha = copyStr(strtok_single(rest, ",", &rest));
+  char *descreveModelo = copyStr(strtok_single(rest, ",", &rest));
+  char *descreveCategoria = copyStr(strtok_single(rest, ",", &rest));
 
-    setVehicleHeader(vf, descrevePrefixo, descreveData, descreveLugares,
-                     descreveLinha, descreveModelo, descreveCategoria);
+  setVehicleHeader(vf, descrevePrefixo, descreveData, descreveLugares,
+                   descreveLinha, descreveModelo, descreveCategoria);
 }
 
 /**
@@ -104,24 +104,22 @@ void parseDescVehicle(vehicleFile *vf, char *line) {
  * @return lineRecord*
  */
 vehicleRecord *parseLineVehicle(char *line) {
-    char *rest = line;
+  char *rest = line;
 
-    boolean removido;
-    int32_t tamanhoModelo;
-    int32_t tamanhoCategoria;
+  boolean removido;
+  int32_t tamanhoModelo;
+  int32_t tamanhoCategoria;
 
-    char *prefixo = safeToId(strtok_single(rest, ",", &rest), 5, &removido);
-    char *data = safeToFixed(strtok_single(rest, ",", &rest), 10);
-    int32_t quantidadeLugares = safeToInt(strtok_single(rest, ",", &rest));
-    int32_t codLinha = safeToInt(strtok_single(rest, ",", &rest));
-    char *model =
-        safeToDynamic(strtok_single(rest, ",", &rest), &tamanhoModelo);
-    char *categoria =
-        safeToDynamic(strtok_single(rest, ",", &rest), &tamanhoCategoria);
+  char *prefixo = safeToId(strtok_single(rest, ",", &rest), 5, &removido);
+  char *data = safeToFixed(strtok_single(rest, ",", &rest), 10);
+  int32_t quantidadeLugares = safeToInt(strtok_single(rest, ",", &rest));
+  int32_t codLinha = safeToInt(strtok_single(rest, ",", &rest));
+  char *model = safeToDynamic(strtok_single(rest, ",", &rest), &tamanhoModelo);
+  char *categoria =
+      safeToDynamic(strtok_single(rest, ",", &rest), &tamanhoCategoria);
 
-    return newVehicleRecord(removido, prefixo, data, quantidadeLugares,
-                            codLinha, tamanhoModelo, model, tamanhoCategoria,
-                            categoria);
+  return newVehicleRecord(removido, prefixo, data, quantidadeLugares, codLinha,
+                          tamanhoModelo, model, tamanhoCategoria, categoria);
 }
 
 /**
@@ -131,52 +129,52 @@ vehicleRecord *parseLineVehicle(char *line) {
  * @param filename
  */
 void parseCSVToVehicles(vehicleFile *vf, char *filename) {
-    FILE *fp = fopen(filename, "r");
+  FILE *fp = fopen(filename, "r");
 
-    if (!fp) {
-        return;
+  if (!fp) {
+    return;
+  }
+
+  char *tmp;
+  vehicleRecord *tmpRec;
+
+  tmp = readLine(fp); // Lê cabeçalho
+  parseDescVehicle(vf, tmp);
+  free(tmp);
+
+  while (!feof(fp)) {
+    tmp = readLine(fp);
+
+    if ((*tmp) == 0) {
+      free(tmp);
+      continue;
     }
 
-    char *tmp;
-    vehicleRecord *tmpRec;
+    tmpRec = parseLineVehicle(tmp);
 
-    tmp = readLine(fp); // Lê cabeçalho
-    parseDescVehicle(vf, tmp);
+    if (tmpRec->removido == '1') {
+      vf->header->nroRegistros++;
+    } else {
+      vf->header->nroRegRemovidos++;
+    }
+
+    if ((vf->nRecords) % VEHICLE_BUFFER == 0) {
+      vf->records = (vehicleRecord **)realloc(
+          vf->records, ((vf->nRecords) / VEHICLE_BUFFER + 1) * VEHICLE_BUFFER *
+                           sizeof(vehicleRecord *));
+    }
+    vf->records[(vf->nRecords)++] = tmpRec;
+    vf->header->byteProxReg += tmpRec->tamanhoRegistro + 5;
+
     free(tmp);
+  }
 
-    while (!feof(fp)) {
-        tmp = readLine(fp);
+  vf->records = (vehicleRecord **)realloc(
+      vf->records, ((vf->nRecords)) * sizeof(vehicleRecord *));
 
-        if ((*tmp) == 0) {
-            free(tmp);
-            continue;
-        }
+  vf->readRecords = true;
 
-        tmpRec = parseLineVehicle(tmp);
-
-        if (tmpRec->removido == '1') {
-            vf->header->nroRegistros++;
-        } else {
-            vf->header->nroRegRemovidos++;
-        }
-
-        if ((vf->nRecords) % VEHICLE_BUFFER == 0) {
-            vf->records = (vehicleRecord **)realloc(
-                vf->records, ((vf->nRecords) / VEHICLE_BUFFER + 1) *
-                                 VEHICLE_BUFFER * sizeof(vehicleRecord *));
-        }
-        vf->records[(vf->nRecords)++] = tmpRec;
-        vf->header->byteProxReg += tmpRec->tamanhoRegistro + 5;
-
-        free(tmp);
-    }
-
-    vf->records = (vehicleRecord **)realloc(
-        vf->records, ((vf->nRecords)) * sizeof(vehicleRecord *));
-
-    vf->readRecords = true;
-
-    fclose(fp);
+  fclose(fp);
 }
 
 /**
@@ -188,16 +186,16 @@ void parseCSVToVehicles(vehicleFile *vf, char *filename) {
  * @return char*
  */
 char *getPrefix(FILE *fp, int *read) {
-    char *prefixo = prepStr(5);
-    fread(prefixo, sizeof(char), 5, fp);
+  char *prefixo = prepStr(5);
+  fread(prefixo, sizeof(char), 5, fp);
 
-    *read = 5;
+  *read = 5;
 
-    if (*prefixo == 0) {
-        free(prefixo);
-        return NULL;
-    }
-    return prefixo;
+  if (*prefixo == 0) {
+    free(prefixo);
+    return NULL;
+  }
+  return prefixo;
 }
 
 /**
@@ -209,33 +207,33 @@ char *getPrefix(FILE *fp, int *read) {
  * @return char*
  */
 char *getDate(FILE *fp, int *read) {
-    char *data = prepStr(10);
-    fseek(fp, 5, SEEK_CUR);
-    fread(data, sizeof(char), 10, fp);
+  char *data = prepStr(10);
+  fseek(fp, 5, SEEK_CUR);
+  fread(data, sizeof(char), 10, fp);
 
-    *read = 15;
+  *read = 15;
 
-    if (*data == 0) {
-        free(data);
-        return NULL;
-    }
-    return data;
+  if (*data == 0) {
+    free(data);
+    return NULL;
+  }
+  return data;
 }
 
 /**
- * @brief Recupera quantidadeLugares da posição corrente de fp e guarda quantidade de
- * bytes pulados/lidos em read
+ * @brief Recupera quantidadeLugares da posição corrente de fp e guarda
+ * quantidade de bytes pulados/lidos em read
  *
  * @param fp
  * @param read
  * @return int32_t
  */
 int32_t getPlaces(FILE *fp, int *read) {
-    int32_t i;
-    fseek(fp, 15, SEEK_CUR);
-    fread(&i, sizeof(int32_t), 1, fp);
-    *read = 19;
-    return i;
+  int32_t i;
+  fseek(fp, 15, SEEK_CUR);
+  fread(&i, sizeof(int32_t), 1, fp);
+  *read = 19;
+  return i;
 }
 
 /**
@@ -247,23 +245,23 @@ int32_t getPlaces(FILE *fp, int *read) {
  * @return char*
  */
 char *getModel(FILE *fp, int *read) {
-    int32_t len;
+  int32_t len;
 
-    fseek(fp, 23, SEEK_CUR);
-    fread(&len, sizeof(int32_t), 1, fp);
+  fseek(fp, 23, SEEK_CUR);
+  fread(&len, sizeof(int32_t), 1, fp);
 
-    if (len == 0) {
-        *read = 27;
-        return NULL;
-    }
+  if (len == 0) {
+    *read = 27;
+    return NULL;
+  }
 
-    char *model = prepStr(len);
+  char *model = prepStr(len);
 
-    fread(model, sizeof(char), len, fp);
+  fread(model, sizeof(char), len, fp);
 
-    *read = 27 + len;
+  *read = 27 + len;
 
-    return model;
+  return model;
 }
 /**
  * @brief Recupera categoria da posição corrente de fp e guarda quantidade de
@@ -274,26 +272,26 @@ char *getModel(FILE *fp, int *read) {
  * @return char*
  */
 char *getCategory(FILE *fp, int *read) {
-    int32_t lenM;
-    int32_t lenCat;
+  int32_t lenM;
+  int32_t lenCat;
 
-    fseek(fp, 23, SEEK_CUR);
-    fread(&lenM, sizeof(int32_t), 1, fp);
-    fseek(fp, lenM, SEEK_CUR);
-    fread(&lenCat, sizeof(int32_t), 1, fp);
+  fseek(fp, 23, SEEK_CUR);
+  fread(&lenM, sizeof(int32_t), 1, fp);
+  fseek(fp, lenM, SEEK_CUR);
+  fread(&lenCat, sizeof(int32_t), 1, fp);
 
-    if (lenCat == 0) {
-        *read = 31 + lenM;
-        return NULL;
-    }
+  if (lenCat == 0) {
+    *read = 31 + lenM;
+    return NULL;
+  }
 
-    char *categoria = prepStr(lenCat);
+  char *categoria = prepStr(lenCat);
 
-    fread(categoria, sizeof(char), lenCat, fp);
+  fread(categoria, sizeof(char), lenCat, fp);
 
-    *read = 31 + lenM + lenCat;
+  *read = 31 + lenM + lenCat;
 
-    return categoria;
+  return categoria;
 }
 
 /**
@@ -306,7 +304,7 @@ char *getCategory(FILE *fp, int *read) {
  * @return boolean
  */
 boolean checkPrefix(char *src, FILE *fp, int *read) {
-    return checkMatch(src, getPrefix(fp, read));
+  return checkMatch(src, getPrefix(fp, read));
 }
 /**
  * @brief Verifica se data da posição corrente de fp é igual a src. Guarda
@@ -318,11 +316,11 @@ boolean checkPrefix(char *src, FILE *fp, int *read) {
  * @return boolean
  */
 boolean checkDate(char *src, FILE *fp, int *read) {
-    return checkMatch(src, getDate(fp, read));
+  return checkMatch(src, getDate(fp, read));
 }
 /**
- * @brief Verifica se quantidadeLugares da posição corrente de fp é igual a src. Guarda
- * quantidade de bytes pulados/lidos em read
+ * @brief Verifica se quantidadeLugares da posição corrente de fp é igual a src.
+ * Guarda quantidade de bytes pulados/lidos em read
  *
  * @param src
  * @param fp
@@ -330,7 +328,7 @@ boolean checkDate(char *src, FILE *fp, int *read) {
  * @return boolean
  */
 boolean checkPlaces(int src, FILE *fp, int *read) {
-    return getPlaces(fp, read) == src;
+  return getPlaces(fp, read) == src;
 }
 /**
  * @brief Verifica se modelo da posição corrente de fp é igual a src. Guarda
@@ -342,7 +340,7 @@ boolean checkPlaces(int src, FILE *fp, int *read) {
  * @return boolean
  */
 boolean checkModel(char *src, FILE *fp, int *read) {
-    return checkMatch(src, getModel(fp, read));
+  return checkMatch(src, getModel(fp, read));
 }
 /**
  * @brief Verifica se categoria da posição corrente de fp é igual a src. Guarda
@@ -354,5 +352,5 @@ boolean checkModel(char *src, FILE *fp, int *read) {
  * @return boolean
  */
 boolean checkCategory(char *src, FILE *fp, int *read) {
-    return checkMatch(src, getCategory(fp, read));
+  return checkMatch(src, getCategory(fp, read));
 }

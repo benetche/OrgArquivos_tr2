@@ -32,9 +32,9 @@ boolean isIntNull(int32_t i) { return i == -1; }
  */
 void setFileStatus(FILE *fp, byte status) {
 
-    fseek(fp, 0, SEEK_SET);
+  fseek(fp, 0, SEEK_SET);
 
-    fwrite(&status, sizeof(byte), 1, fp);
+  fwrite(&status, sizeof(byte), 1, fp);
 }
 
 /**
@@ -47,20 +47,20 @@ void setFileStatus(FILE *fp, byte status) {
  */
 boolean checkMatch(char *src, char *dest) {
 
-    if (dest == NULL) {
-        return src == NULL;
-    }
+  if (dest == NULL) {
+    return src == NULL;
+  }
 
-    if (dest == NULL) {
-        free(dest);
-        return false;
-    }
-
-    boolean ans = strcmp(dest, src) == 0;
-
+  if (dest == NULL) {
     free(dest);
+    return false;
+  }
 
-    return ans;
+  boolean ans = strcmp(dest, src) == 0;
+
+  free(dest);
+
+  return ans;
 }
 /**
  * @brief Aloca size+1 bytes para criação de uma string. Escreve \0 no fim do
@@ -70,9 +70,9 @@ boolean checkMatch(char *src, char *dest) {
  * @return char*
  */
 char *prepStr(int size) {
-    char *str = (char *)malloc(sizeof(char) * size + 1);
-    str[size] = 0;
-    return str;
+  char *str = (char *)malloc(sizeof(char) * size + 1);
+  str[size] = 0;
+  return str;
 }
 /**
  * @brief Implementação thread-safe da função strtok
@@ -83,24 +83,24 @@ char *prepStr(int size) {
  * @return char*
  */
 char *strtok_single(char *str, char const *delims, char **save_ptr) {
-    char *p, *ret = NULL;
+  char *p, *ret = NULL;
 
-    if (str != NULL)
-        (*save_ptr) = str;
+  if (str != NULL)
+    (*save_ptr) = str;
 
-    if ((*save_ptr) == NULL)
-        return NULL;
+  if ((*save_ptr) == NULL)
+    return NULL;
 
-    if ((p = strpbrk((*save_ptr), delims)) != NULL) {
-        *p = 0;
-        ret = (*save_ptr);
-        (*save_ptr) = ++p;
-    } else if (*(*save_ptr)) {
-        ret = (*save_ptr);
-        (*save_ptr) = NULL;
-    }
+  if ((p = strpbrk((*save_ptr), delims)) != NULL) {
+    *p = 0;
+    ret = (*save_ptr);
+    (*save_ptr) = ++p;
+  } else if (*(*save_ptr)) {
+    ret = (*save_ptr);
+    (*save_ptr) = NULL;
+  }
 
-    return ret;
+  return ret;
 }
 
 /**
@@ -110,13 +110,13 @@ char *strtok_single(char *str, char const *delims, char **save_ptr) {
  * @return char*
  */
 char *copyStr(char *src) {
-    int len = strlen(src);
-    if (len == 0) {
-        return NULL;
-    }
-    char *copy = (char *)malloc(sizeof(char) * (len + 1));
-    memcpy(copy, src, len + 1);
-    return copy;
+  int len = strlen(src);
+  if (len == 0) {
+    return NULL;
+  }
+  char *copy = (char *)malloc(sizeof(char) * (len + 1));
+  memcpy(copy, src, len + 1);
+  return copy;
 }
 
 /**
@@ -127,25 +127,25 @@ char *copyStr(char *src) {
  * @param size
  */
 void paddString(char *val, int size) {
-    int len = strlen(val);
+  int len = strlen(val);
 
-    if (len == size) {
-        return;
-    }
+  if (len == size) {
+    return;
+  }
 
-    memset(val + (len + 1), '@', size - len);
+  memset(val + (len + 1), '@', size - len);
 
-    // Descomente para melhor entendimento da função
-    // printf("%d\n", size);
+  // Descomente para melhor entendimento da função
+  // printf("%d\n", size);
 
-    // for (int i = 0; i <size+1; i++) {
-    //     if (val[i] == 0) {
-    //         printf(".");
-    //         continue;
-    //     }
-    //     printf("%c", val[i]);
-    // }
-    // printf("\n");
+  // for (int i = 0; i <size+1; i++) {
+  //     if (val[i] == 0) {
+  //         printf(".");
+  //         continue;
+  //     }
+  //     printf("%c", val[i]);
+  // }
+  // printf("\n");
 }
 
 /**
@@ -155,10 +155,10 @@ void paddString(char *val, int size) {
  * @return int32_t
  */
 int32_t safeToInt(char *val) {
-    if (strcmp(val, "NULO") == 0) {
-        return -1;
-    }
-    return atoi(val);
+  if (strcmp(val, "NULO") == 0) {
+    return -1;
+  }
+  return atoi(val);
 }
 /**
  * @brief Transforma val em string de tamanho fixo considerando a possibilidade
@@ -169,18 +169,18 @@ int32_t safeToInt(char *val) {
  * @return char*
  */
 char *safeToFixed(char *val, int size) {
-    char *res = NULL;
+  char *res = NULL;
 
-    if (strcmp(val, "NULO") == 0) {
-        res = (char *)calloc(size + 1, sizeof(char));
-    } else {
-        res = copyStr(val);
-        res = (char *)realloc(res, (size + 1) * sizeof(char));
-    }
+  if (strcmp(val, "NULO") == 0) {
+    res = (char *)calloc(size + 1, sizeof(char));
+  } else {
+    res = copyStr(val);
+    res = (char *)realloc(res, (size + 1) * sizeof(char));
+  }
 
-    paddString(res, size);
+  paddString(res, size);
 
-    return res;
+  return res;
 }
 
 /**
@@ -194,20 +194,20 @@ char *safeToFixed(char *val, int size) {
  * @return char*
  */
 char *safeToId(char *val, int size, char *removido) {
-    char *res = NULL;
-    *removido = true;
+  char *res = NULL;
+  *removido = true;
 
-    if (val[0] == '*') {
-        *removido = false;
-        val++;
-    }
+  if (val[0] == '*') {
+    *removido = false;
+    val++;
+  }
 
-    res = copyStr(val);
-    res = (char *)realloc(res, (size + 1) * sizeof(char));
+  res = copyStr(val);
+  res = (char *)realloc(res, (size + 1) * sizeof(char));
 
-    paddString(res, size);
+  paddString(res, size);
 
-    return res;
+  return res;
 }
 /**
  * @brief Transforma val em string de tamanho dinâmico considerando a
@@ -218,13 +218,13 @@ char *safeToId(char *val, int size, char *removido) {
  * @return char*
  */
 char *safeToDynamic(char *val, int32_t *size) {
-    if (strcmp(val, "NULO") == 0) {
-        *size = 0;
-        return NULL;
-    } else {
-        *size = strlen(val);
-        return copyStr(val);
-    }
+  if (strcmp(val, "NULO") == 0) {
+    *size = 0;
+    return NULL;
+  } else {
+    *size = strlen(val);
+    return copyStr(val);
+  }
 }
 /**
  * @brief Lê linha terminada por \n ou de fim de arquivo do arquivo stream.
@@ -233,33 +233,32 @@ char *safeToDynamic(char *val, int32_t *size) {
  * @return char*
  */
 char *readLine(FILE *stream) {
-    char *string = NULL;
-    int size = 0;
-    char c;
+  char *string = NULL;
+  int size = 0;
+  char c;
 
-    fscanf(stream, " ");
+  fscanf(stream, " ");
 
-    do {
-        fscanf(stream, "%c", &c);
+  do {
+    fscanf(stream, "%c", &c);
 
-        if ((c == '\n' && size == 0) || c == 13) {
-            c = 0;
-        } else {
-            if (size % READLINE_BUFFER == 0) {
-                string =
-                    (char *)realloc(string, (size / READLINE_BUFFER + 1) *
-                                                READLINE_BUFFER * sizeof(char));
-            }
-            string[size++] = c;
-        }
+    if ((c == '\n' && size == 0) || c == 13) {
+      c = 0;
+    } else {
+      if (size % READLINE_BUFFER == 0) {
+        string = (char *)realloc(string, (size / READLINE_BUFFER + 1) *
+                                             READLINE_BUFFER * sizeof(char));
+      }
+      string[size++] = c;
+    }
 
-    } while (c != '\n' && !feof(stream));
+  } while (c != '\n' && !feof(stream));
 
-    string[--size] = 0;
+  string[--size] = 0;
 
-    string = (char *)realloc(string, (size + 1) * sizeof(char));
+  string = (char *)realloc(string, (size + 1) * sizeof(char));
 
-    return string;
+  return string;
 }
 
 /**
@@ -270,35 +269,35 @@ char *readLine(FILE *stream) {
 void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o
                                                   código dessa função. */
 
-    /* Use essa função para comparação no run.codes. Lembre-se de ter fechado
-     * (fclose) o arquivo anteriormente. Ela vai abrir de novo para leitura e
-     * depois fechar (você não vai perder pontos por isso se usar ela). */
+  /* Use essa função para comparação no run.codes. Lembre-se de ter fechado
+   * (fclose) o arquivo anteriormente. Ela vai abrir de novo para leitura e
+   * depois fechar (você não vai perder pontos por isso se usar ela). */
 
-    unsigned long i, cs;
-    unsigned char *mb;
-    size_t fl;
-    FILE *fs;
-    if (nomeArquivoBinario == NULL || !(fs = fopen(nomeArquivoBinario, "rb"))) {
-        fprintf(stderr,
-                "ERRO AO ESCREVER O BINARIO NA TELA (função binarioNaTela): "
-                "não foi possível abrir o arquivo que me passou para leitura. "
-                "Ele existe e você tá passando o nome certo? Você lembrou de "
-                "fechar ele com fclose depois de usar?\n");
-        return;
-    }
-    fseek(fs, 0, SEEK_END);
-    fl = ftell(fs);
-    fseek(fs, 0, SEEK_SET);
-    mb = (unsigned char *)malloc(fl);
-    fread(mb, 1, fl, fs);
+  unsigned long i, cs;
+  unsigned char *mb;
+  size_t fl;
+  FILE *fs;
+  if (nomeArquivoBinario == NULL || !(fs = fopen(nomeArquivoBinario, "rb"))) {
+    fprintf(stderr,
+            "ERRO AO ESCREVER O BINARIO NA TELA (função binarioNaTela): "
+            "não foi possível abrir o arquivo que me passou para leitura. "
+            "Ele existe e você tá passando o nome certo? Você lembrou de "
+            "fechar ele com fclose depois de usar?\n");
+    return;
+  }
+  fseek(fs, 0, SEEK_END);
+  fl = ftell(fs);
+  fseek(fs, 0, SEEK_SET);
+  mb = (unsigned char *)malloc(fl);
+  fread(mb, 1, fl, fs);
 
-    cs = 0;
-    for (i = 0; i < fl; i++) {
-        cs += (unsigned long)mb[i];
-    }
-    printf("%lf\n", (cs / (double)100));
-    free(mb);
-    fclose(fs);
+  cs = 0;
+  for (i = 0; i < fl; i++) {
+    cs += (unsigned long)mb[i];
+  }
+  printf("%lf\n", (cs / (double)100));
+  free(mb);
+  fclose(fs);
 }
 
 /**
@@ -308,43 +307,43 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o
  */
 void scan_quote_string(char *str) {
 
-    /*
-     *	Use essa função para ler um campo string delimitado entre aspas (").
-     *	Chame ela na hora que for ler tal campo. Por exemplo:
-     *
-     *	A entrada está da seguinte forma:
-     *		nomeDoCampo "MARIA DA SILVA"
-     *
-     *	Para ler isso para as strings já alocadas str1 e str2 do seu programa,
-     *você faz: scanf("%s", str1); // Vai salvar nomeDoCampo em str1
-     *		scan_quote_string(str2); // Vai salvar MARIA DA SILVA em str2
-     *(sem as aspas)
-     *
-     */
+  /*
+   *	Use essa função para ler um campo string delimitado entre aspas (").
+   *	Chame ela na hora que for ler tal campo. Por exemplo:
+   *
+   *	A entrada está da seguinte forma:
+   *		nomeDoCampo "MARIA DA SILVA"
+   *
+   *	Para ler isso para as strings já alocadas str1 e str2 do seu programa,
+   *você faz: scanf("%s", str1); // Vai salvar nomeDoCampo em str1
+   *		scan_quote_string(str2); // Vai salvar MARIA DA SILVA em str2
+   *(sem as aspas)
+   *
+   */
 
-    char R;
+  char R;
 
-    while ((R = getchar()) != EOF && isspace(R))
-        ; // ignorar espaços, \r, \n...
+  while ((R = getchar()) != EOF && isspace(R))
+    ; // ignorar espaços, \r, \n...
 
-    if (R == 'N' || R == 'n') { // campo NULO
-        getchar();
-        getchar();
-        getchar();       // ignorar o "ULO" de NULO.
-        strcpy(str, ""); // copia string vazia
-    } else if (R == '\"') {
-        if (scanf("%[^\"]", str) != 1) { // ler até o fechamento das aspas
-            strcpy(str, "");
-        }
-        getchar();         // ignorar aspas fechando
-    } else if (R != EOF) { // vc tá tentando ler uma string que não tá entre
-                           // aspas! Fazer leitura normal %s então, pois deve
-                           // ser algum inteiro ou algo assim...
-        str[0] = R;
-        scanf("%s", &str[1]);
-    } else { // EOF
-        strcpy(str, "");
+  if (R == 'N' || R == 'n') { // campo NULO
+    getchar();
+    getchar();
+    getchar();       // ignorar o "ULO" de NULO.
+    strcpy(str, ""); // copia string vazia
+  } else if (R == '\"') {
+    if (scanf("%[^\"]", str) != 1) { // ler até o fechamento das aspas
+      strcpy(str, "");
     }
+    getchar();           // ignorar aspas fechando
+  } else if (R != EOF) { // vc tá tentando ler uma string que não tá entre
+                         // aspas! Fazer leitura normal %s então, pois deve
+                         // ser algum inteiro ou algo assim...
+    str[0] = R;
+    scanf("%s", &str[1]);
+  } else { // EOF
+    strcpy(str, "");
+  }
 }
 
 /* ---------------- EXTRA ----------------

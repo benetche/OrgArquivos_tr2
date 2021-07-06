@@ -1,2 +1,4 @@
-# ignore compiled main
+# ignore compiled binaries
 main
+*.o
+.DS_Store

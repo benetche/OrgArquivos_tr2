@@ -12,32 +12,32 @@
  *
  */
 typedef struct vehicleRecord {
-    byte removido;
-    int32_t tamanhoRegistro;
-    char *prefixo;
-    char *data;
-    int32_t quantidadeLugares;
-    int32_t codLinha;
-    int32_t tamanhoModelo;
-    char *model;
-    int32_t tamanhoCategoria;
-    char *categoria;
+  byte removido;
+  int32_t tamanhoRegistro;
+  char *prefixo;
+  char *data;
+  int32_t quantidadeLugares;
+  int32_t codLinha;
+  int32_t tamanhoModelo;
+  char *model;
+  int32_t tamanhoCategoria;
+  char *categoria;
 } vehicleRecord;
 /**
  * @brief Estrutura responsável pelo header dos arquivos de veículo
  *
  */
 typedef struct vehicleFileHeader {
-    byte status;
-    int64_t byteProxReg;
-    int32_t nroRegistros;
-    int32_t nroRegRemovidos;
-    char *descrevePrefixo;
-    char *descreveData;
-    char *descreveLugares;
-    char *descreveLinha;
-    char *descreveModelo;
-    char *descreveCategoria;
+  byte status;
+  int64_t byteProxReg;
+  int32_t nroRegistros;
+  int32_t nroRegRemovidos;
+  char *descrevePrefixo;
+  char *descreveData;
+  char *descreveLugares;
+  char *descreveLinha;
+  char *descreveModelo;
+  char *descreveCategoria;
 } vehicleFileHeader;
 /**
  * @brief Estrutura responsável por guardar header, registros e infos adicionais
@@ -45,12 +45,12 @@ typedef struct vehicleFileHeader {
  *
  */
 typedef struct vehicleFile {
-    FILE *fp;
-    boolean readRecords;
-    char *openMode;
-    int nRecords;
-    vehicleFileHeader *header;
-    vehicleRecord **records;
+  FILE *fp;
+  boolean readRecords;
+  char *openMode;
+  int nRecords;
+  vehicleFileHeader *header;
+  vehicleRecord **records;
 } vehicleFile;
 
 vehicleFile *createVehicleFileStruct(char *filename, char *mode);
