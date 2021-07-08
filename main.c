@@ -52,7 +52,7 @@ int main(void) {
                            criaChavePonteiroPreenchida(chave, offsetCorrente));
         }
 
-        free(registroCorrente);
+        destroyVehicleRecord(registroCorrente);
       }
 
       destroiArvoreB(arvore);

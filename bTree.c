@@ -99,7 +99,7 @@ arvoreB *criaArvoreB(char *fileName) {
 
   arvoreB *a = (arvoreB *)malloc(sizeof(arvoreB));
 
-  a->arqIndice = fopen(fileName, "a+");
+  a->arqIndice = fopen(fileName, "w+");
 
   if (!a->arqIndice) {
     free(a);
@@ -236,7 +236,8 @@ void insereEmOrdemNo(noArvoreB *no, chavePonteiro *chaveAInserir,
   // tmpPonteiroSubArv[0] = no->ponteiroSubArv[0];
 
   for (i = 0, j = 0; i < (ORDEM - 1); i++, j++) {
-    if (chaveAInserir->chave < no->ponteirosRef[i]->chave) {
+    if (chaveAInserir->chave < no->ponteirosRef[i]->chave ||
+        no->ponteirosRef[i]->chave == -1) {
       tmpPonteirosRef[j] = chaveAInserir;
       tmpPonteiroSubArv[j + 1] = rrnSubArvoreDireita;
       break;
@@ -268,7 +269,6 @@ void split(chavePonteiro *chaveInsercao, int32_t rrnInsercao,
            noArvoreB *noCorrente, chavePonteiro **chavePromovida,
            int32_t *subArvoreDireita, noArvoreB *novoNo) {
   int i, j;
-
   // Working page
   chavePonteiro **tmpPonteirosRef =
       (chavePonteiro **)malloc(sizeof(chavePonteiro *) * ORDEM);
@@ -287,6 +287,12 @@ void split(chavePonteiro *chaveInsercao, int32_t rrnInsercao,
 
     tmpPonteirosRef[j] = noCorrente->ponteirosRef[i];
     tmpPonteiroSubArv[j + 1] = noCorrente->ponteiroSubArv[i + 1];
+  }
+
+  // Caso seja maior que todos
+  if (i == (ORDEM - 1)) {
+    tmpPonteirosRef[j] = chaveInsercao;
+    tmpPonteiroSubArv[j + 1] = rrnInsercao;
   }
 
   for (j++; i < (ORDEM - 1); i++, j++) {
@@ -317,18 +323,10 @@ void split(chavePonteiro *chaveInsercao, int32_t rrnInsercao,
   novoNo->nroChavesIndexadas = 0;
   novoNo->ponteiroSubArv[0] = tmpPonteiroSubArv[(ORDEM / 2) + 1];
   for (i = ((ORDEM / 2) + 1); i < ORDEM; i++) {
+    free(novoNo->ponteirosRef[i - ((ORDEM / 2) + 1)]);
     novoNo->nroChavesIndexadas++;
     novoNo->ponteirosRef[i - ((ORDEM / 2) + 1)] = tmpPonteirosRef[i];
     novoNo->ponteiroSubArv[i - ((ORDEM / 2))] = tmpPonteiroSubArv[i + 1];
-  }
-
-  // Corrige possivel problema caso ordem seja par
-  int correction = ORDEM % 2 == 0 ? 1 : 0;
-
-  // O restante torna-se nulo
-  for (i = (ORDEM / 2) - correction; i < (ORDEM - 1); i++) {
-    novoNo->ponteirosRef[i] = criaChavePonteiro();
-    novoNo->ponteiroSubArv[i + 1] = -1;
   }
 
   checaSeEhFolha(noCorrente);
@@ -396,6 +394,7 @@ void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir) {
     noArvoreB *novoNo = criaNo(arvore->cabecalho->RRNproxNo++);
     free(novoNo->ponteirosRef[0]);
     novoNo->ponteirosRef[0] = chaveAInserir;
+    novoNo->nroChavesIndexadas++;
     escreveNoEmArvore(arvore, novoNo);
     arvore->cabecalho->noRaiz = novoNo->RRNdoNo;
     destroiNo(novoNo);
@@ -412,6 +411,7 @@ void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir) {
     noArvoreB *novoNo = criaNo(arvore->cabecalho->RRNproxNo++);
     free(novoNo->ponteirosRef[0]);
     novoNo->ponteirosRef[0] = chavePromovida;
+    novoNo->nroChavesIndexadas++;
     novoNo->ponteiroSubArv[0] = arvore->cabecalho->noRaiz;
     novoNo->ponteiroSubArv[1] = subArvoreDireita;
     escreveNoEmArvore(arvore, novoNo);

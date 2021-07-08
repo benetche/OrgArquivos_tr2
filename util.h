@@ -10,6 +10,9 @@
 
 #define READLINE_BUFFER 255
 
+// MACRO TEMPORARIO PARA DEBUG
+#define UNUSED(x) (void)x;
+
 #include <stdint.h>
 #include <stdio.h>
 

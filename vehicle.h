@@ -80,4 +80,6 @@ void readVehicleFileHeader(vehicleFile *vf);
 
 void readVehicleReg(FILE *fp, vehicleRecord *vr);
 
+void destroyVehicleRecord(vehicleRecord *v);
+
 #endif

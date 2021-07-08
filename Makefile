@@ -34,7 +34,7 @@ run: all
 leaks: debug
 	leaks -atExit -- ./$(TARGET)
 
-valgrind:
+valgrind: debug
 	valgrind $(VFLAGS) ./$(TARGET)
 
 zip:
