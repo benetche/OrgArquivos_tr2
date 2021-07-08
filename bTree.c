@@ -71,7 +71,8 @@ void destroiNo(noArvoreB *n) {
 }
 
 void escreveCabecalhoArvore(arvoreB *arvore) {
-  if (!arvore || !arvore->arqIndice) {
+  if (!arvore || !arvore->arqIndice ||
+      strcmp(arvore->modoDeAbertura, "r") == 0) {
     return;
   }
 
@@ -95,11 +96,11 @@ void leCabecalhoArvore(arvoreB *arvore) {
   fread(&arvore->cabecalho->RRNproxNo, sizeof(int32_t), 1, arvore->arqIndice);
 }
 
-arvoreB *criaArvoreB(char *fileName) {
+arvoreB *criaArvoreB(char *fileName, char *modoDeAbertura) {
 
   arvoreB *a = (arvoreB *)malloc(sizeof(arvoreB));
 
-  a->arqIndice = fopen(fileName, "w+");
+  a->arqIndice = fopen(fileName, modoDeAbertura);
 
   if (!a->arqIndice) {
     free(a);
@@ -109,6 +110,8 @@ arvoreB *criaArvoreB(char *fileName) {
   a->cabecalho = criaCabecalhoArv();
 
   fseek(a->arqIndice, 0, SEEK_END);
+
+  a->modoDeAbertura = modoDeAbertura;
 
   if (ftell(a->arqIndice) == 0) {
     a->cabecalho->status = '0';

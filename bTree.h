@@ -39,13 +39,14 @@ typedef struct noArvoreB {
 // Possui o arquivo da arvore b, numero de nos e registro de cabecalho
 typedef struct arvoreB {
   FILE *arqIndice;
+  char *modoDeAbertura;
   // int32_t tamanho;
   cabecalhoArv *cabecalho;
 } arvoreB;
 
 chavePonteiro *criaChavePonteiroPreenchida(int32_t chave, int64_t ponteiroRef);
 
-arvoreB *criaArvoreB(char *fileName);
+arvoreB *criaArvoreB(char *fileName, char *modoDeAbertura);
 
 void destroiArvoreB(arvoreB *arvore);
 

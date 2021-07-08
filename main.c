@@ -32,7 +32,7 @@ int main(void) {
       printf("Falha no processamento do arquivo.\n");
     } else {
 
-      arvoreB *arvore = criaArvoreB(indFileName);
+      arvoreB *arvore = criaArvoreB(indFileName, "w+");
 
       readVehicleFileHeader(vf);
 
