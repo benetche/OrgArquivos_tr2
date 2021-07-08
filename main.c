@@ -1,4 +1,5 @@
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,43 +11,58 @@
 #include "line.h"
 #include "lineUtils.h"
 
+#include "bTree.h"
+#include "convertePrefixo.h"
+
 int main(void) {
   char *regFileName = (char *)malloc(sizeof(char) * 128);
   char *indFileName = (char *)malloc(sizeof(char) * 128);
 
-  unsigned int op;
+  int op;
 
-  printf("Digite uma operacao:\n");
+  scanf(" %d", &op);
+  vehicleFile *vf;
 
-  scanf("%ud", &op);
-  lineFile *lf;
+  if (op == 9) {
+    scanf(" %s %[^\n]s", regFileName, indFileName);
 
-  switch (op) {
-  case 10:
-    printf("DIGITE [arquivo de linha] + [arquivo de indices]\n");
-    scanf("%[^\n]s", regFileName);
-    scanf("%[^\n]s", indFileName);
+    vf = createVehicleFileStruct(regFileName, "rb");
 
-    lf = createLineFileStruct(regFileName, "rb");
-
-    if (!lf) {
+    if (!vf) {
       printf("Falha no processamento do arquivo.\n");
-      break;
+    } else {
+
+      arvoreB *arvore = criaArvoreB(indFileName);
+
+      readVehicleFileHeader(vf);
+
+      vf->nRecords = vf->header->nroRegRemovidos + vf->header->nroRegistros;
+
+      vehicleRecord *registroCorrente;
+      int64_t offsetCorrente;
+
+      for (int i = 0; i < vf->nRecords; i++) {
+        registroCorrente = (vehicleRecord *)malloc(sizeof(vehicleRecord));
+        offsetCorrente = ftell(vf->fp);
+        readVehicleReg(vf->fp, registroCorrente);
+
+        if (registroCorrente->removido == '1') {
+          int32_t chave = convertePrefixo(registroCorrente->prefixo);
+          inserirNaArvoreB(arvore,
+                           criaChavePonteiroPreenchida(chave, offsetCorrente));
+        }
+
+        free(registroCorrente);
+      }
+
+      destroiArvoreB(arvore);
+      destroyVehicleFile(vf);
+      binarioNaTela(indFileName);
     }
-
-    readLineFile(lf, true);
-
-    if (lf->nRecords == 0) {
-      printf("Registro inexistente.\n");
-    }
-
-    destroyLineFile(lf);
-    break;
-
-  default:
-
-    break;
   }
+
+  free(indFileName);
+  free(regFileName);
 
   return 0;
 }

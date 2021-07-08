@@ -2,3 +2,5 @@
 main
 *.o
 .DS_Store
+main
+testZone/*

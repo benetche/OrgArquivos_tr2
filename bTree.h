@@ -6,13 +6,16 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define PAG_REGISTRO 77
+#define TAM_PAG 77
 #define ORDEM 5
+#define PROMOCAO 1
+#define SEM_PROMOCAO 0
+#define ERRO_CHAVE_EXISTENTE -127
 
 // Registro de cabecalho
 typedef struct cabecalhoArv {
-  boolean status;
-  int32_t noRaiz;
+  byte status;
+  int32_t noRaiz; // RRN
   int32_t RRNproxNo;
   byte *lixo;
 } cabecalhoArv;
@@ -20,24 +23,32 @@ typedef struct cabecalhoArv {
 // Struct auxiliar para o conjunto CHAVE/PONTEIRO
 typedef struct chavePonteiro {
   int32_t chave;
-  int64_t ponteiroReg; // Byte offset do registro(char removido)
+  int64_t ponteiroRef; // Byte offset do registro(char removido)
 } chavePonteiro;
 
 // Struct de no da arvore b
 typedef struct noArvoreB {
-  boolean folha;
+  byte folha;
   int32_t nroChavesIndexadas;
   int32_t RRNdoNo;
-  int32_t *ponteiroSubArv;
-  chavePonteiro **ponteirosReg;
+  int32_t *ponteiroSubArv; // RRN's
+  chavePonteiro **ponteirosRef;
 } noArvoreB;
 
 // Struct da arvore b
 // Possui o arquivo da arvore b, numero de nos e registro de cabecalho
 typedef struct arvoreB {
-  FILE *indexFile;
-  int32_t size;
-  cabecalhoArv *header;
+  FILE *arqIndice;
+  // int32_t tamanho;
+  cabecalhoArv *cabecalho;
 } arvoreB;
+
+chavePonteiro *criaChavePonteiroPreenchida(int32_t chave, int64_t ponteiroRef);
+
+arvoreB *criaArvoreB(char *fileName);
+
+void destroiArvoreB(arvoreB *arvore);
+
+void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir);
 
 #endif

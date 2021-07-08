@@ -76,4 +76,8 @@ boolean printMatchingRecordsVehicle(vehicleFile *vf, char *field, char *val);
 
 void insertVehicles(int n, vehicleFile *vf);
 
+void readVehicleFileHeader(vehicleFile *vf);
+
+void readVehicleReg(FILE *fp, vehicleRecord *vr);
+
 #endif
