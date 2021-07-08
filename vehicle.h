@@ -72,6 +72,8 @@ void readVehicleFile(vehicleFile *vf, boolean readRecords);
 
 void printVehicleFile(vehicleFile *vf);
 
+void printVehicleRecord(vehicleFileHeader *vh, vehicleRecord *vr);
+
 boolean printMatchingRecordsVehicle(vehicleFile *vf, char *field, char *val);
 
 void insertVehicles(int n, vehicleFile *vf);

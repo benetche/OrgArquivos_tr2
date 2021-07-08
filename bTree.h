@@ -52,4 +52,6 @@ void destroiArvoreB(arvoreB *arvore);
 
 void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir);
 
+int64_t buscaNaArvoreB(arvoreB *arvore, int32_t chaveDeBusca);
+
 #endif

@@ -72,7 +72,7 @@ void destroiNo(noArvoreB *n) {
 
 void escreveCabecalhoArvore(arvoreB *arvore) {
   if (!arvore || !arvore->arqIndice ||
-      strcmp(arvore->modoDeAbertura, "r") == 0) {
+      strcmp(arvore->modoDeAbertura, "rb") == 0) {
     return;
   }
 
@@ -204,19 +204,24 @@ void escreveNoEmArvore(arvoreB *arvore, noArvoreB *no) {
 }
 
 int buscaChaveEmNo(chavePonteiro **ponteirosRef, int esquerda, int direita,
-                   int32_t chave) {
+                   int32_t chave, int *posicaoDaChave) {
   if (direita >= esquerda) {
     int meio = esquerda + ((direita - esquerda) / 2);
 
     if (ponteirosRef[meio]->chave == chave) {
+      if (posicaoDaChave != NULL) {
+        *posicaoDaChave = meio;
+      }
       return 0;
     }
 
     if (ponteirosRef[meio]->chave > chave) {
-      return buscaChaveEmNo(ponteirosRef, esquerda, meio - 1, chave);
+      return buscaChaveEmNo(ponteirosRef, esquerda, meio - 1, chave,
+                            posicaoDaChave);
     }
 
-    return buscaChaveEmNo(ponteirosRef, meio + 1, direita, chave);
+    return buscaChaveEmNo(ponteirosRef, meio + 1, direita, chave,
+                          posicaoDaChave);
   }
 
   return esquerda + 1;
@@ -348,9 +353,9 @@ int inserir(arvoreB *arvore, int32_t rrnCorrente, chavePonteiro *novaChave,
   }
 
   noArvoreB *noCorrente = recuperaNoPorRrn(arvore, rrnCorrente);
-  int resultadoBuscaEmNo =
-      buscaChaveEmNo(noCorrente->ponteirosRef, 0,
-                     noCorrente->nroChavesIndexadas - 1, novaChave->chave);
+  int resultadoBuscaEmNo = buscaChaveEmNo(noCorrente->ponteirosRef, 0,
+                                          noCorrente->nroChavesIndexadas - 1,
+                                          novaChave->chave, NULL);
 
   // P_B_RRN e P_B_KEY
   int32_t rrnInferiorParaInserir;
@@ -421,4 +426,35 @@ void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir) {
     arvore->cabecalho->noRaiz = novoNo->RRNdoNo;
     destroiNo(novoNo);
   }
+}
+
+int64_t busca(arvoreB *arvore, int32_t rrnCorrente, int32_t chaveDeBusca) {
+  if (rrnCorrente == -1) {
+    return -1;
+  }
+
+  noArvoreB *noCorrente = recuperaNoPorRrn(arvore, rrnCorrente);
+
+  int posicaoDaChave;
+
+  int resultadoBuscaEmNo = buscaChaveEmNo(noCorrente->ponteirosRef, 0,
+                                          noCorrente->nroChavesIndexadas - 1,
+                                          chaveDeBusca, &posicaoDaChave);
+
+  if (resultadoBuscaEmNo == 0) {
+    int64_t offsetDaChave =
+        noCorrente->ponteirosRef[posicaoDaChave]->ponteiroRef;
+    destroiNo(noCorrente);
+    return offsetDaChave;
+  }
+
+  int32_t rrnProvavel = noCorrente->ponteiroSubArv[resultadoBuscaEmNo - 1];
+
+  destroiNo(noCorrente);
+
+  return busca(arvore, rrnProvavel, chaveDeBusca);
+}
+
+int64_t buscaNaArvoreB(arvoreB *arvore, int32_t chaveDeBusca) {
+  return busca(arvore, arvore->cabecalho->noRaiz, chaveDeBusca);
 }
