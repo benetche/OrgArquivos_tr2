@@ -54,6 +54,7 @@ typedef struct lineFile {
 lineFile *createLineFileStruct(char *filename, char *mode);
 
 void destroyLineFile(lineFile *lf);
+void destroyLineRecord(lineRecord *l);
 
 void setLineHeader(lineFile *lf, char *descreveCodigo, char *descreveCartao,
                    char *descreveNome, char *descreveCor);
@@ -66,7 +67,11 @@ void writeLineFile(lineFile *lf);
 
 void readLineFile(lineFile *lf, boolean readRecords);
 
+void readLineFileHeader(lineFile *lf);
+void readLineReg(FILE *fp, lineRecord *lr);
+
 void printLineFile(lineFile *lf);
+void printLineRecord(lineFileHeader *lh, lineRecord *lr);
 
 boolean printMatchingRecordsLine(lineFile *lf, char *field, char *val);
 

@@ -40,7 +40,7 @@ noArvoreB *criaNo(int32_t rrn) {
   noArvoreB *n = (noArvoreB *)malloc(sizeof(noArvoreB));
 
   // Inicia valores de folha e nroChaves
-  n->folha = '1';
+  n->folha = '0';
   n->nroChavesIndexadas = 0;
   n->RRNdoNo = rrn;
   n->ponteiroSubArv = (int32_t *)malloc(ORDEM * sizeof(int32_t));
@@ -266,7 +266,7 @@ void insereEmOrdemNo(noArvoreB *no, chavePonteiro *chaveAInserir,
     no->ponteiroSubArv[i + 1] = tmpPonteiroSubArv[i + 1];
   }
 
-  checaSeEhFolha(no);
+  // checaSeEhFolha(no);
 
   free(tmpPonteirosRef[ORDEM - 1]);
   free(tmpPonteirosRef);
@@ -337,8 +337,9 @@ void split(chavePonteiro *chaveInsercao, int32_t rrnInsercao,
     novoNo->ponteiroSubArv[i - ((ORDEM / 2))] = tmpPonteiroSubArv[i + 1];
   }
 
-  checaSeEhFolha(noCorrente);
-  checaSeEhFolha(novoNo);
+  // checaSeEhFolha(noCorrente);
+  // checaSeEhFolha(novoNo);
+  novoNo->folha = noCorrente->folha;
 
   free(tmpPonteiroSubArv);
   free(tmpPonteirosRef);
@@ -400,6 +401,7 @@ int inserir(arvoreB *arvore, int32_t rrnCorrente, chavePonteiro *novaChave,
 void inserirNaArvoreB(arvoreB *arvore, chavePonteiro *chaveAInserir) {
   if (arvore->cabecalho->noRaiz == -1) {
     noArvoreB *novoNo = criaNo(arvore->cabecalho->RRNproxNo++);
+    novoNo->folha = '1';
     free(novoNo->ponteirosRef[0]);
     novoNo->ponteirosRef[0] = chaveAInserir;
     novoNo->nroChavesIndexadas++;

@@ -18,13 +18,15 @@ int main(void) {
   char *regFileName = (char *)malloc(sizeof(char) * 128);
   char *indFileName = (char *)malloc(sizeof(char) * 128);
   char *chaveDeBusca = (char *)malloc(sizeof(char) * 128);
-
+  arvoreB *arvore;
   int op;
 
   scanf(" %d", &op);
   vehicleFile *vf;
+  lineFile *lf;
 
-  if (op == 9) {
+  switch(op){
+    case 9:
     scanf(" %s %[^\n]s", regFileName, indFileName);
 
     vf = createVehicleFileStruct(regFileName, "rb");
@@ -33,7 +35,7 @@ int main(void) {
       printf("Falha no processamento do arquivo.\n");
     } else {
 
-      arvoreB *arvore = criaArvoreB(indFileName, "wb+");
+      arvore = criaArvoreB(indFileName, "wb+");
 
       readVehicleFileHeader(vf);
 
@@ -60,13 +62,50 @@ int main(void) {
       destroyVehicleFile(vf);
       binarioNaTela(indFileName);
     }
-  } else if (op == 11) {
+      break;
+
+    case 10:
+      scanf(" %s %[^\n]s", regFileName, indFileName);
+
+      lf = createLineFileStruct(regFileName, "rb");
+
+      if(!lf){
+        printf("Falha no processamento do arquivo.\n");
+      }
+      else{
+        arvore = criaArvoreB(indFileName, "wb+");
+
+        readLineFileHeader(lf);
+
+        lf->nRecords = lf->header->nroRegRemovidos + lf->header->nroRegistros;
+        lineRecord *registroCorrente;
+        int64_t offsetCorrente;
+
+        for(int i = 0; i < lf->nRecords; i++){
+          registroCorrente = (lineRecord *) malloc(sizeof(lineRecord));
+          offsetCorrente = ftell(lf->fp);
+          readLineReg(lf->fp, registroCorrente);
+
+          if(registroCorrente->removido == '1'){
+            inserirNaArvoreB(arvore, 
+            criaChavePonteiroPreenchida(registroCorrente->codLinha, offsetCorrente));
+          }
+          destroyLineRecord(registroCorrente);
+        }
+
+        destroyLineFile(lf);
+        destroiArvoreB(arvore);
+        binarioNaTela(indFileName);
+      }
+      break;
+
+    case 11:  
     scanf(" %s %s %*s", regFileName, indFileName);
 
     scan_quote_string(chaveDeBusca);
 
     vf = createVehicleFileStruct(regFileName, "rb");
-    arvoreB *arvore = criaArvoreB(indFileName, "rb");
+    arvore = criaArvoreB(indFileName, "rb");
 
     if (!vf) {
       printf("Falha no processamento do arquivo.\n");
@@ -80,7 +119,7 @@ int main(void) {
       vf->nRecords = vf->header->nroRegRemovidos + vf->header->nroRegistros;
 
       int32_t chave = convertePrefixo(chaveDeBusca);
-
+      printf("Chave de busca convertida: %d\n", chave);
       vehicleRecord *registroBuscado;
 
       int64_t offsetBuscado = buscaNaArvoreB(arvore, chave);
@@ -106,6 +145,59 @@ int main(void) {
       destroiArvoreB(arvore);
       destroyVehicleFile(vf);
     }
+      break;
+
+    case 12:
+      scanf(" %s %s %*s", regFileName, indFileName);
+      scan_quote_string(chaveDeBusca);
+
+      lf = createLineFileStruct(regFileName, "rb");
+      arvore = criaArvoreB(indFileName, "rb");
+      if(!lf){
+        printf("Falha no processamento do arquivo.\n");
+      }
+      else if(!arvore){
+        printf("Falha no processamento do arquivo.\n");
+      }
+      else{
+        readLineFileHeader(lf);
+        lf->nRecords = lf->header->nroRegRemovidos + lf->header->nroRegistros;
+
+        int32_t chave = atoi(chaveDeBusca);
+        lineRecord *registroBuscado;
+
+        int64_t offsetBuscado = buscaNaArvoreB(arvore, chave);
+        
+        if(offsetBuscado == -1){
+          printf("Registro inexistente.\n");
+        }
+        else{
+          registroBuscado = (lineRecord *) malloc(sizeof(lineRecord));
+          fseek(lf->fp, offsetBuscado, SEEK_SET);
+          readLineReg(lf->fp, registroBuscado);
+
+          if(registroBuscado->removido == '0'){
+            printf("Registro removido.\n");
+          }
+          else{
+            printLineRecord(lf->header, registroBuscado);
+          }
+
+          destroyLineRecord(registroBuscado);
+        }
+
+        destroiArvoreB(arvore);
+        destroyLineFile(lf);
+
+      }
+
+      
+      break;
+
+    default:
+      scanf(" %[^\n]s", indFileName);
+      binarioNaTela(indFileName);
+      exit(0);
   }
 
   free(indFileName);
