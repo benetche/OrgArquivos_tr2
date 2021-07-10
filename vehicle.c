@@ -2,7 +2,7 @@
 
 #include "util.h"
 #include "vehicleUtils.h"
-
+#include "bTree.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -520,4 +520,70 @@ void insertVehicles(int n, vehicleFile *vf) {
   writeVehicleFileHeader(vf);
 
   free(vr);
+}
+
+vehicleRecord* insertOneVehicle(vehicleFile *vf){
+  fseek(vf->fp, vf->header->byteProxReg, SEEK_SET);
+
+  vehicleRecord *vr = (vehicleRecord *)malloc(sizeof(vehicleRecord));
+  vr->removido = '1';
+
+  char nullDate[] = {0, '@', '@', '@', '@', '@', '@', '@', '@', '@'};
+  char prefixo[6];
+  char data[10];
+  char quantidadeLugares[12];
+  char codLinha[12];
+  char model[128];
+  char categoria[128];
+
+
+  scan_quote_string(prefixo);
+  vr->prefixo = prefixo;
+
+  scan_quote_string(data);
+  if (*data == 0) {
+    vr->data = nullDate;
+  } else {
+    vr->data = data;
+  }
+
+  scan_quote_string(quantidadeLugares);
+  if (*quantidadeLugares == 0) {
+    vr->quantidadeLugares = -1;
+  } else {
+    vr->quantidadeLugares = atoi(quantidadeLugares);
+  }
+
+  scan_quote_string(codLinha);
+  if (*codLinha == 0) {
+    vr->codLinha = -1;
+  } else {
+    vr->codLinha = atoi(codLinha);
+  }
+
+  scan_quote_string(model);
+  if (*model == 0) {
+    vr->tamanhoModelo = 0;
+    vr->model = NULL;
+  } else {
+    vr->tamanhoModelo = strlen(model);
+    vr->model = model;
+  }
+
+  scan_quote_string(categoria);
+  if (*categoria == 0) {
+    vr->tamanhoCategoria = 0;
+    vr->categoria = NULL;
+  } else {
+    vr->tamanhoCategoria = strlen(categoria);
+    vr->categoria = categoria;
+  }
+
+  vr->tamanhoRegistro =
+      5 + 10 + 4 + 4 + 4 + vr->tamanhoModelo + 4 + vr->tamanhoCategoria;
+
+  vf->header->byteProxReg += vr->tamanhoRegistro + 5;
+  writeVehicleReg(vf->fp, vr);
+
+  return vr;
 }

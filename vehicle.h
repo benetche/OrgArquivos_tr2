@@ -4,6 +4,7 @@
 #define _VEHICLE_H_
 
 #include "util.h"
+#include "bTree.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -83,5 +84,9 @@ void readVehicleFileHeader(vehicleFile *vf);
 void readVehicleReg(FILE *fp, vehicleRecord *vr);
 
 void destroyVehicleRecord(vehicleRecord *v);
+
+vehicleRecord *insertOneVehicle(vehicleFile *vf);
+
+void writeVehicleFileHeader(vehicleFile *vf);
 
 #endif

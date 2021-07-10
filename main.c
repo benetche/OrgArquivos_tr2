@@ -20,7 +20,8 @@ int main(void) {
   char *chaveDeBusca = (char *)malloc(sizeof(char) * 128);
   arvoreB *arvore;
   int op;
-
+  int nroInsercoes;
+  vehicleRecord *vr;
   scanf(" %d", &op);
   vehicleFile *vf;
   lineFile *lf;
@@ -119,7 +120,6 @@ int main(void) {
       vf->nRecords = vf->header->nroRegRemovidos + vf->header->nroRegistros;
 
       int32_t chave = convertePrefixo(chaveDeBusca);
-      printf("Chave de busca convertida: %d\n", chave);
       vehicleRecord *registroBuscado;
 
       int64_t offsetBuscado = buscaNaArvoreB(arvore, chave);
@@ -191,10 +191,40 @@ int main(void) {
 
       }
 
+      break;
+    
+    case 13:
+      scanf(" %s %s %d", regFileName, indFileName, &nroInsercoes);
+      vf = createVehicleFileStruct(regFileName, "rb+");
+      arvore = criaArvoreB(indFileName, "rb+");
+
+      if(!vf){
+        printf("Falha no processamento do arquivo.\n");
+        break;
+      }
+      else if(!arvore){
+        printf("Falha no processamento do arquivo.\n");
+        break;
+      }
+
+      readVehicleFile(vf, false);
+
+      for(int i = 0; i < nroInsercoes; i++){
+        int64_t offsetCorrente = vf->header->byteProxReg;
+        vr = insertOneVehicle(vf);
+        int chave = convertePrefixo(vr->prefixo);
+        inserirNaArvoreB(arvore, criaChavePonteiroPreenchida(chave, offsetCorrente));
+        
+      }
+      writeVehicleFileHeader(vf);
+      destroiArvoreB(arvore);
+      destroyVehicleFile(vf);
+      binarioNaTela(indFileName);
       
       break;
 
-    default:
+
+    default:  //debug
       scanf(" %[^\n]s", indFileName);
       binarioNaTela(indFileName);
       exit(0);
