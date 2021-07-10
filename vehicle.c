@@ -525,6 +525,13 @@ void insertVehicles(int n, vehicleFile *vf) {
   free(vr);
 }
 
+/**
+ * @brief Le um registro a ser inserido e o insere no arquivo de registro
+ * de veiculo
+ * @param vf
+ * @return retorna o registro lido e inserido para poder ser inserido na arvore B
+ */
+
 vehicleRecord* insertOneVehicle(vehicleFile *vf){
   fseek(vf->fp, vf->header->byteProxReg, SEEK_SET);
 

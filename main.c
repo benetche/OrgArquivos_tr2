@@ -2,7 +2,6 @@
 Autores: 
 -Eduardo Amaral - NUSP 11735021
 -Vitor Beneti Martins - NUSP 11877635
-
 */
 #include <stdint.h>
 #include <stdio.h>
@@ -34,6 +33,8 @@ int main(void) {
   lineFile *lf;
 
   switch(op){
+    //funcionalidade: cria um arquivo de arvore B (indices) a partir de um arquivo de registros
+    //de veiculo
     case 9:
     scanf(" %s %[^\n]s", regFileName, indFileName);
 
@@ -73,6 +74,8 @@ int main(void) {
       break;
 
     case 10:
+    //funcionalidade: cria um arquivo de arvore B (indices) a partir de um arquivo de registros
+    //de linha
       scanf(" %s %[^\n]s", regFileName, indFileName);
 
       lf = createLineFileStruct(regFileName, "rb");

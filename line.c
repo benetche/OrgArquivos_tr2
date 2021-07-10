@@ -7,7 +7,6 @@ Autores:
 #include "line.h"
 #include "lineUtils.h"
 #include "util.h"
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -476,6 +475,14 @@ void insertLines(int n, lineFile *lf) {
 
   free(lr);
 }
+
+/**
+ * @brief Le um registro a ser inserido e o insere no arquivo de registro
+ * de linha
+ * @param lf
+ * @return retorna o registro lido e inserido para poder ser inserido na arvore B
+ */
+
 
 lineRecord *insertOneLine(lineFile *lf){
   fseek(lf->fp, lf->header->byteProxReg, SEEK_SET);

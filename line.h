@@ -7,7 +7,6 @@ Autores:
 #define _LINE_H_
 
 #include "util.h"
-
 #include <stdint.h>
 #include <stdio.h>
 /**
