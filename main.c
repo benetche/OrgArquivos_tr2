@@ -1,4 +1,9 @@
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
 
+*/
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +27,8 @@ int main(void) {
   int op;
   int nroInsercoes;
   vehicleRecord *vr;
+  lineRecord *lr;
+
   scanf(" %d", &op);
   vehicleFile *vf;
   lineFile *lf;
@@ -101,6 +108,7 @@ int main(void) {
       break;
 
     case 11:  
+    //funcionalidade: busca na arvore B a partir de um campo de registro de veiculo
     scanf(" %s %s %*s", regFileName, indFileName);
 
     scan_quote_string(chaveDeBusca);
@@ -148,6 +156,7 @@ int main(void) {
       break;
 
     case 12:
+      //funcionalidade: busca na arvore B a partir de um campo de registro de linha
       scanf(" %s %s %*s", regFileName, indFileName);
       scan_quote_string(chaveDeBusca);
 
@@ -194,6 +203,7 @@ int main(void) {
       break;
     
     case 13:
+      //funcionalidade: insercao de registros no arquivo de veiculos + insercao na arvore B
       scanf(" %s %s %d", regFileName, indFileName, &nroInsercoes);
       vf = createVehicleFileStruct(regFileName, "rb+");
       arvore = criaArvoreB(indFileName, "rb+");
@@ -208,7 +218,7 @@ int main(void) {
       }
 
       readVehicleFile(vf, false);
-
+      //le registros a serem inseridos, insere-os no arquivo de registros e na arvore B
       for(int i = 0; i < nroInsercoes; i++){
         int64_t offsetCorrente = vf->header->byteProxReg;
         vr = insertOneVehicle(vf);
@@ -222,11 +232,46 @@ int main(void) {
       binarioNaTela(indFileName);
       
       break;
+    
+    case 14:
+      //funcionalidade: insercao de registros no arquivo de linha + insercao na arvore B
+      scanf(" %s %s %d", regFileName, indFileName, &nroInsercoes);
 
+      lf = createLineFileStruct(regFileName, "rb+");
+      arvore = criaArvoreB(indFileName, "rb+");
+
+      if(!lf){
+        printf("Falha no processamento do arquivo.\n");
+        break;
+      }
+      else if(!arvore){
+        printf("Falha no processamento do arquivo.\n");
+        break;
+      }
+      
+      readLineFile(lf, false);
+      //le registros a serem inseridos, insere-os no arquivo de registros e na arvore B
+      for(int i = 0; i < nroInsercoes; i++){
+        int64_t offsetCorrente = lf->header->byteProxReg;
+        lr = insertOneLine(lf);
+        int chave = lr->codLinha;
+        inserirNaArvoreB(arvore, criaChavePonteiroPreenchida(chave, offsetCorrente));
+      }
+
+      writeLineFileHeader(lf);
+      destroiArvoreB(arvore);
+      destroyLineFile(lf);
+      binarioNaTela(indFileName);
+      break;
 
     default:  //debug
-      scanf(" %[^\n]s", indFileName);
-      binarioNaTela(indFileName);
+      // scanf(" %[^\n]s", indFileName);
+      // lf = createLineFileStruct(indFileName, "rb");
+      // readLineFileHeader(lf);
+      // printf("n registros: %d\n", lf->header->nroRegistros);
+      // printf("BPR: %ld\n", lf->header->byteProxReg);
+      // destroyLineFile(lf);
+      // binarioNaTela(indFileName);
       exit(0);
   }
 

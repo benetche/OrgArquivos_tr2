@@ -1,5 +1,8 @@
-// Autor: Eduardo Amaral - NUSP 11735021
-
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
+*/
 #ifndef _LINE_H_
 #define _LINE_H_
 
@@ -69,10 +72,10 @@ void readLineFile(lineFile *lf, boolean readRecords);
 
 void readLineFileHeader(lineFile *lf);
 void readLineReg(FILE *fp, lineRecord *lr);
-
+void writeLineFileHeader(lineFile *lf);
 void printLineFile(lineFile *lf);
 void printLineRecord(lineFileHeader *lh, lineRecord *lr);
-
+lineRecord *insertOneLine(lineFile *lf);
 boolean printMatchingRecordsLine(lineFile *lf, char *field, char *val);
 
 void insertLines(int n, lineFile *lf);

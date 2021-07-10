@@ -1,5 +1,8 @@
-// Autor: Eduardo Amaral - NUSP 11735021
-
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
+*/
 #ifndef _VEHICLE_H_
 #define _VEHICLE_H_
 

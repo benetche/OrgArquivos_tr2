@@ -1,4 +1,8 @@
-// Autor: Eduardo Amaral - NUSP 11735021
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
+*/
 
 #include "line.h"
 #include "lineUtils.h"
@@ -41,8 +45,10 @@ lineFile *createLineFileStruct(char *filename, char *mode) {
   }
 
   lf->header = (lineFileHeader *)malloc(sizeof(lineFileHeader));
-  lf->header->byteProxReg = 0;
-  lf->header->nroRegRemovidos = lf->header->nroRegistros = 0;
+  if(strcmp(mode, "rb") == 0){
+    lf->header->byteProxReg = 0;
+    lf->header->nroRegRemovidos = lf->header->nroRegistros = 0;
+  }
 
   if (strcmp(mode, "rb") != 0) {
     setFileStatus(lf->fp, '0');
@@ -469,4 +475,57 @@ void insertLines(int n, lineFile *lf) {
   writeLineFileHeader(lf);
 
   free(lr);
+}
+
+lineRecord *insertOneLine(lineFile *lf){
+  fseek(lf->fp, lf->header->byteProxReg, SEEK_SET);
+
+  lineRecord *lr = (lineRecord *)malloc(sizeof(lineRecord));
+
+  char codLinha[5];
+  char aceitaCartao[2];
+  char nomeLinha[128];
+  char corLinha[128];
+  lf->nRecords++;
+
+  scan_quote_string(codLinha);
+
+  if (codLinha[0] == '*') {
+    lr->removido = '0';
+    lf->header->nroRegRemovidos++;
+    lr->codLinha = atoi(codLinha + 1);
+  } else {
+    lr->removido = '1';
+    lf->header->nroRegistros++;
+    lr->codLinha = atoi(codLinha);
+  }
+
+  scan_quote_string(aceitaCartao);
+  lr->aceitaCartao = aceitaCartao;
+
+  scan_quote_string(nomeLinha);
+  if (*nomeLinha == 0) {
+    lr->tamanhoNome = 0;
+    lr->nomeLinha = NULL;
+  } else {
+    lr->tamanhoNome = strlen(nomeLinha);
+    lr->nomeLinha = nomeLinha;
+  }
+
+  scan_quote_string(corLinha);
+  if (*corLinha == 0) {
+    lr->tamanhoCor = 0;
+    lr->corLinha = NULL;
+  } else {
+    lr->tamanhoCor = strlen(corLinha);
+    lr->corLinha = corLinha;
+  }
+
+  lr->tamanhoRegistro = 4 + 1 + 4 + lr->tamanhoNome + 4 + lr->tamanhoCor;
+
+  lf->header->byteProxReg += lr->tamanhoRegistro + 5;
+
+  writeLineReg(lf->fp, lr);
+  return lr;
+
 }

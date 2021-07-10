@@ -1,3 +1,9 @@
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
+*/
+
 #ifndef B_TREE_H
 #define B_TREE_H
 

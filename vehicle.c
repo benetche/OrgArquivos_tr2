@@ -1,5 +1,8 @@
-// Autor: Eduardo Amaral - NUSP 11735021
-
+/*
+Autores: 
+-Eduardo Amaral - NUSP 11735021
+-Vitor Beneti Martins - NUSP 11877635
+*/
 #include "util.h"
 #include "vehicleUtils.h"
 #include "bTree.h"
@@ -536,7 +539,7 @@ vehicleRecord* insertOneVehicle(vehicleFile *vf){
   char model[128];
   char categoria[128];
 
-
+  vf->nRecords++;
   scan_quote_string(prefixo);
   vr->prefixo = prefixo;
 
