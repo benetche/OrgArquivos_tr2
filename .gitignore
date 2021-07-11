@@ -1,2 +1,9 @@
-# ignore compiled main
+# ignore compiled binaries
 main
+*.o
+.DS_Store
+main
+testZone/*
+vgcore*
+*.zip
+*.bin
