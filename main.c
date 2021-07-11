@@ -280,7 +280,7 @@ int main(void) {
     // printf("BPR: %ld\n", lf->header->byteProxReg);
     // destroyLineFile(lf);
     // binarioNaTela(indFileName);
-    exit(0);
+    break;
   }
 
   free(indFileName);
