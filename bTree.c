@@ -1,5 +1,5 @@
 /*
-Autores: 
+Autores:
 -Eduardo Amaral - NUSP 11735021
 -Vitor Beneti Martins - NUSP 11877635
 */
@@ -369,6 +369,7 @@ int inserir(arvoreB *arvore, int32_t rrnCorrente, chavePonteiro *novaChave,
   chavePonteiro *chaveInferiorParaInserir;
 
   if (resultadoBuscaEmNo == 0) {
+    free(novaChave);
     destroiNo(noCorrente);
     return ERRO_CHAVE_EXISTENTE;
   }
